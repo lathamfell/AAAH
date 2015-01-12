@@ -1,0 +1,27 @@
+# .procmailrc
+# for CS419 final project
+PATH=/bin:/usr/bin:/usr/local/bin
+MAILDIR=$HOME/mailbox
+DEFAULT=$MAILDIR/inbox
+LOGFILE=$MAILDIR/proclogfile
+SHELL=/bin/sh
+
+:0:
+* ^Subject.*Advising Signup Cancellation
+{
+  :0 c
+  cancellation
+
+  :0
+  | /usr/bin/python handler.py
+}
+
+:0:
+* ^Subject.*Advising Signup
+{
+  :0 c
+  signup
+
+  :0
+  | /usr/bin/python handler.py
+}
