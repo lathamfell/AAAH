@@ -1,27 +1,36 @@
 # .procmailrc
-# for CS419 final project
+# CS419 final project
+# Group 2
+# http://linux.die.net/man/5/procmailrc
+
 PATH=/bin:/usr/bin:/usr/local/bin
-MAILDIR=$HOME/AAAH/mailbox
-DEFAULT=$MAILDIR/inbox
-LOGFILE=$MAILDIR/proclogfile
+MAILDIR=$HOME/mail
+LOGFILE=$HOME/procmail.log
 SHELL=/bin/sh
+
+#Change following line to AAAH path if not in root directory.
+AAAH=$HOME/AAAH
 
 :0:
 * ^Subject.*Advising Signup Cancellation
 {
-  :0 c
-  cancellation
+
+#  :0 c
+#  | /usr/bin/python $AAAH/handler.py
 
   :0
-  | /usr/bin/python handler.py
+  $MAILDIR/cancellation
+
 }
 
 :0:
 * ^Subject.*Advising Signup
 {
-  :0 c
-  signup
+
+#  :0 c
+#  | /usr/bin/python $AAAH/handler.py
 
   :0
-  | /usr/bin/python handler.py
+  $MAILDIR/signup
+
 }
