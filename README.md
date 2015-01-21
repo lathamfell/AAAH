@@ -3,7 +3,7 @@ Automated Advising Appointment Handler
 
 Installation:
 
-1. Clone or download the code into your home directory on flip.
+1. Clone or download the code into your home directory on flip.  It is not necessary to create a subfolder prior to cloning/downloading.
 
 2. Ensure the code is in this subfolder in your home directory:
 
