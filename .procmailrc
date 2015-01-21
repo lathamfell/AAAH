@@ -1,7 +1,7 @@
 # .procmailrc
 # for CS419 final project
 PATH=/bin:/usr/bin:/usr/local/bin
-MAILDIR=$HOME/mailbox
+MAILDIR=$HOME/AAAH/mailbox
 DEFAULT=$MAILDIR/inbox
 LOGFILE=$MAILDIR/proclogfile
 SHELL=/bin/sh
