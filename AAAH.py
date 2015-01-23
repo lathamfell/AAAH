@@ -1,9 +1,6 @@
 import curses
 import smtplib
 
-# counter to debug appointment refresh
-counter = 0
-
 def sendCancellation():
   # set email values
   fromAddress = 'do.not.reply@engr.orst.edu'
@@ -25,60 +22,124 @@ def sendCancellation():
         'To: ' + studentAddress + ' ' + advisorAddress + '\n' + \
         'Subject: ' + subject + '\n\n' + \
         body
-
   # send the email
   s = smtplib.SMTP('mail.oregonstate.edu')
-  try:
-    s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
-    print 'Cancellation email sent'
-  except:
-    print 'Cancellation email not sent, unknown error'
-
-def showAppointments(screen):
-  # redisplay appointments to console
-  screen.addstr(4, 0, '\nAPPOINTMENTS FROM DATABASE GO HERE\n')
-  # display refresh count for debugging
-  global counter
-  screen.addstr('REFRESHED ' + str(counter) + ' TIMES')
-  counter += 1
+  s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
 
 def main():
+  # string to provide user feedback
+  feedback = ''
+  # first row of appointments to be displayed on pad
+  pad_row = 0
+  # holds scrolling commands
+  padCmd = ''
   # initialize application screen
   screen = curses.initscr()
-  # keep keys from being echoed while in curses mode
-  curses.noecho()
-  # enable application to respond instantly to key presses
-  curses.cbreak()
+  # turn on echo
+  curses.echo()
+  # turn off cbreak
+  curses.nocbreak()
   # enable curses to translate special key inputs, such as arrow keys
   screen.keypad(1)
+  # enable window scrolling
+  # screen.scrollok(1)
   # user input loop
   while True:
-    screen.addstr('Welcome to AAAH!  The Automated Advising ' \
-      'Appointment Handler\n')
-    screen.addstr('Please note this system is personally calibrated ' \
-      'to D Robert McGrath\n')
-    screen.addstr('\nProfessor McGrath, your current advising ' \
-      'appointment schedule is:\n')
-    showAppointments(screen)
-    screen.addstr('\n\nThe following options are available:\n')
+    # reset padCmd
+    padCmd = ''
+    screen.clear()
+    screen.refresh()
+    screen.addstr('                     ' \
+                  'Automated Advising Appointment Handler' \
+                  '                     ',
+                  curses.A_BOLD)
+    screen.addstr('\nID  ' \
+                  'Student                   ' \
+                  'Advisor                   ' \
+                  'Date        ' \
+                  'Start  ' \
+                  'End  ', curses.A_UNDERLINE)
+    # create pad
+    pad = curses.newpad(1000, 80)
+    # write appointments to pad
+    for i in range(20):
+      # initialize x position
+      x = 0
+      # set appointment variables
+      number = i + 1
+      studentUsername = 'felll'
+      advisorUsername = 'mcgrath'
+      date = '2015-01-20'
+      start = '14:20'
+      end = '15:20'
+      # write appointment to screen
+      pad.addstr(i, x, str(number))
+      pad.addstr(i, x + 4, studentUsername)
+      pad.addstr(i, x + 30, advisorUsername)
+      pad.addstr(i, x + 56, date)
+      pad.addstr(i, x + 68, start)
+      pad.addstr(i, x + 75, end) 
+    # display the pad
+    pad.refresh(pad_row, 0, 3, 0, 9, 79)
+    # pad lower border
+    screen.hline(10, 0, curses.A_UNDERLINE, 80)
+    # user menu
+    screen.addstr(12, 0, 'The following options are available:\n')
     screen.addstr('1: Cancel an existing appointment\n')
-    screen.addstr('2: Refresh appointment schedule\n')
-    screen.addstr('3: Exit\n')
+    screen.addstr('2: Scroll through appointments\n')
+    screen.addstr('3: Refresh appointment schedule\n')
+    screen.addstr('4: Exit\n')
+    screen.addstr('\n' + feedback + '\n')
     screen.addstr('\nPlease enter your selection: ')
     screen.refresh()
     # get user input
-    command = screen.getch()
+    command = screen.getstr()
     # process user input
-    if command == ord('1'):
-      sendCancellation()
-      screen.clear()
+    if command == '1':
+      screen.addstr('\nPlease enter the appointment ID, ' \
+        'or "b" to go back: ')
+      feedback = ''
       screen.refresh()
-    elif command == ord('2'):
-      showAppointments(screen)
-    elif command == ord('3'):
+      appmtID = screen.getstr()
+      if appmtID == 'b':
+        pass
+      else:
+        try: 
+          appmtID = int(appmtID)
+          if appmtID < 1 or appmtID > 20:
+            feedback = 'That is not a valid appointment ID'
+          else:
+            feedback = 'Cancellation email sent for appointment ' + str(appmtID)
+            sendCancellation()      
+        except:
+          feedback = 'That is not a valid appointment ID'
+    elif command == '2':
+      # turn off echo
+      curses.noecho()
+      # turn on cbreak
+      curses.cbreak()
+      # turn off cursor
+      curses.curs_set(0)
+      screen.addstr('\nPress up and down arrows to scroll, or "b" to go back ')
+      while padCmd != ord('b'):
+        padCmd = screen.getch()
+        if padCmd == curses.KEY_DOWN:
+          pad_row += 1
+        if padCmd == curses.KEY_UP:
+          pad_row -= 1
+        pad.refresh(pad_row, 0, 3, 0, 9, 79)
+      # restore curses settings
+      curses.echo()
+      curses.nocbreak()
+      curses.curs_set(1)
+      feedback = ''
+    elif command == '3':
+      feedback = 'Appointments refreshed'
+      pad_row = 0
+    elif command == '4':
       break
     else:
-      screen.addstr('\nSorry, that is not a valid option')
+      feedback = 'Sorry, that is not a valid option'
 
 # terminate the curses application
   curses.nocbreak()
