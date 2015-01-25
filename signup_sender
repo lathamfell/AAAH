@@ -1,0 +1,30 @@
+import smtplib
+
+def main():
+  # set msg values
+  fromAddress = "do.not.reply@engr.orst.edu"
+  studentName = "Brabham, Matthew Lawrence"
+  studentAddress = "latham.fell@base2s.com"
+  advisorAddress = "felll@engr.orst.edu"
+  subject = "Advising Signup with McGrath, D Kevin confirmed for " + studentName
+  date = "Friday, January 30th, 2015"
+  timeStart = "3:00 pm"
+  timeEnd = "3:30 pm"
+  body = 'Advising Signup with McGrath, D Kevin confirmed\n' \
+    'Name: ' + studentName + '\n' \
+    'Email: ' + studentAddress + '\n' \
+    'Date: ' + date + '\n' \
+    'Time: ' + timeStart + ' - ' + timeEnd + '\n\n\n' \
+    'Please contact support@engr.oregonstate.edu if you ' \
+    'experience problems'
+  # construct email
+  msg = 'From: ' + fromAddress + '\n' + \
+        'To: ' + studentAddress + ' ' + advisorAddress + '\n' + \
+        'Subject: ' + subject + '\n\n' + \
+        body
+  # send the email
+  s = smtplib.SMTP('mail.oregonstate.edu')
+  s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
+
+if __name__ == '__main__':
+  main()

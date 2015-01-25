@@ -12,6 +12,8 @@ import random
 import sys
 
 def main():
+  # set timezone
+  tz = pytz.timezone('PST8PDT')
   # bring message in from pipe as an array
   msg_pipe = sys.stdin.readlines()
   # join every array element into a single string
@@ -23,8 +25,11 @@ def main():
   me = 'felll@engr.orst.edu'
   # in production, 'you' will be dmcgrath@eecs.oregonstate.edu
   you = ['lathamfell@gmail.com']
-  tz = pytz.timezone('PST8PDT')
-  #target = open('test' + str(random.randrange(1, 998+1)), 'w+')
+  # pull full student name from email. example: "Brabham, Matthew Lawrence"
+  studentName = msg['subject'].split('for')[1].strip()
+  target = open('test' + str(random.randrange(1, 998+1)), 'w+')
+  target.write(studentName)
+  target.close()
   # pull date from email
   for line in msg.get_payload().split('\n'):
     # pull appointment date
@@ -79,6 +84,9 @@ def main():
   # save appointment start and end time
   start = dt.datetime(year, month, day, startHour, startMinute, 0, 0, tz)
   end = dt.datetime(year, month, day, endHour, endMinute, 0, 0, tz)
+  # subject will populate Subject of email and Summary of invite
+  subject = "Advising Appointment for " + studentName
+  body = ""
   # build icalendar object
   cal = icalendar.Calendar()
   cal.add('prodid', '-//AAAH//engr.orst.edu//')
@@ -87,12 +95,12 @@ def main():
   event = icalendar.Event()
   for attendee in you:
     event.add('attendee', attendee)
-  event.add('organizer', "felll@engr.orst.edu")
+  event.add('organizer', me)
   event.add('status', "confirmed")
   event.add('category', "Event")
-  event.add('summary', "AAAH Party")
-  event.add('description', "Let's get together to celebrate")
-  event.add('location', "Room 101")
+  event.add('summary', subject)
+  event.add('description', body)
+  event.add('location', "Office of Kevin McGrath")
   event.add('dtstart', start)
   event.add('dtend', end)
   event.add('dtstamp', tz.localize(dt.datetime.now()))
@@ -105,12 +113,12 @@ def main():
 
   msg = email.MIMEMultipart.MIMEMultipart('alternative')
 
-  msg["Subject"] = "AAAH Party"
-  msg["From"] = "felll@engr.orst.edu"
+  msg["Subject"] = subject
+  msg["From"] = me
   msg["To"] = ", ".join(you)
   msg["Content-class"] = "urn:content-classes:calendarmessage"
 
-  msg.attach(email.MIMEText.MIMEText("Let's get together to celebrate"))
+  msg.attach(email.MIMEText.MIMEText(body))
 
   filename = "invite.ics"
   part = email.MIMEBase.MIMEBase('text', "calendar", method="REQUEST", name=filename)
