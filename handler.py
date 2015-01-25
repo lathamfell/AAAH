@@ -18,9 +18,10 @@ def main():
   msg_string = ('').join(msg_pipe)
   # turn string into message object
   msg = email.message_from_string(msg_string)
-  # send icalendar invite  
-  sendAppointment("AAAH Party", "Let's get together to celebrate")
+  # send icalendar invite
+  # in production, 'me' will be dmcgrath@eecs.oregonstate.edu
   me = 'felll@engr.orst.edu'
+  # in production, 'you' will be dmcgrath@eecs.oregonstate.edu
   you = ['lathamfell@gmail.com']
   tz = pytz.timezone('PST8PDT')
   startHour = 7
@@ -50,12 +51,12 @@ def main():
 
   msg = email.MIMEMultipart.MIMEMultipart('alternative')
 
-  msg["Subject"] = subj
+  msg["Subject"] = "AAAH Party"
   msg["From"] = "felll@engr.orst.edu"
   msg["To"] = ", ".join(you)
   msg["Content-class"] = "urn:content-classes:calendarmessage"
 
-  msg.attach(email.MIMEText.MIMEText(description))
+  msg.attach(email.MIMEText.MIMEText("Let's get together to celebrate"))
 
   filename = "invite.ics"
   part = email.MIMEBase.MIMEBase('text', "calendar", method="REQUEST", name=filename)
