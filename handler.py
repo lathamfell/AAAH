@@ -9,21 +9,22 @@ import datetime as dt
 import icalendar
 import pytz
 import random
+import sys
 
 def main():
-  # trival script to tell when main function is called
-  target = open('pyfile', 'w+')
-  target.write("my py info")
-  target.close()
+  # bring message in from pipe as an array
+  msg_pipe = sys.stdin.readlines()
+  # join every array element into a single string
+  msg_string = ('').join(msg_pipe)
+  # turn string into message object
+  msg = email.message_from_string(msg_string)
+  # send icalendar invite  
   sendAppointment("AAAH Party", "Let's get together to celebrate")
-  updateDatabase()
-  
-def sendAppointment(subj, description):
   me = 'felll@engr.orst.edu'
-  you = ['latham.fell@base2s.com']
-  tz = pytz.timezone("Europe/London")
+  you = ['lathamfell@gmail.com']
+  tz = pytz.timezone('PST8PDT')
   startHour = 7
-  start = dt.datetime(2015, 1, 17, 16, 30, 0, 0, tz)
+  start = dt.datetime(2015, 1, 30, 16, 30, 0, 0, tz)
   cal = icalendar.Calendar()
   cal.add('prodid', '-//AAAH//engr.orst.edu//')
   cal.add('version', '2.0')
@@ -34,13 +35,13 @@ def sendAppointment(subj, description):
   event.add('organizer', "felll@engr.orst.edu")
   event.add('status', "confirmed")
   event.add('category', "Event")
-  event.add('summary', subj)
-  event.add('description', description)
+  event.add('summary', "AAAH Party")
+  event.add('description', "Let's get together to celebrate")
   event.add('location', "Room 101")
   event.add('dtstart', start)
-  event.add('dtend', dt.datetime(2015, 1, 17, 17, 30, 0, 0, tz))
+  event.add('dtend', dt.datetime(2015, 1, 30, 17, 30, 0, 0, tz))
   event.add('dtstamp', tz.localize(dt.datetime.now()))
-  event['uid'] = 'mcgrath' + str(randomNumber())
+  event['uid'] = 'mcgrath' + str(random.randrange(1, 999998+1))
   event.add('priority', 5)
   event.add('sequence', 1)
   event.add('created', tz.localize(dt.datetime.now()))
@@ -70,6 +71,9 @@ def sendAppointment(subj, description):
   s.sendmail(msg["From"], [msg["To"]], msg.as_string())
   s.quit()
 
+  # update database
+  updateDatabase()
+
 def updateDatabase():
   # db = MySQLdb.connect('oniddb.cws.oregonstate.edu', 
   #                      'felll-db',
@@ -77,9 +81,6 @@ def updateDatabase():
   #                      'felll-db')
   # cur = db.cursor()
   pass
-
-def randomNumber():
-  return random.randrange(1, 1000000+1)
 
 if __name__ == '__main__':
   main()

@@ -14,23 +14,19 @@ AAAH=$HOME/AAAH
 :0:
 * ^Subject.*Advising Signup Cancellation
 {
+  # :0 c
+  # cancellation
 
-#  :0 c
-#  | /usr/bin/python $AAAH/handler.py
-
-  :0
-  $MAILDIR/cancellation
-
+  :0 
+  | python $AAAH/handler.py
 }
 
 :0:
 * ^Subject.*Advising Signup
 {
-
-#  :0 c
-#  | /usr/bin/python $AAAH/handler.py
+  # :0 c
+  # signup
 
   :0
-  $MAILDIR/signup
-
+  | python $AAAH/handler.py
 }
