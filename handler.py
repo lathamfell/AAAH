@@ -25,11 +25,14 @@ def main():
   me = 'felll@engr.orst.edu'
   # in production, 'you' will be dmcgrath@eecs.oregonstate.edu
   you = ['lathamfell@gmail.com']
-  # pull full student name from email. example: "Brabham, Matthew Lawrence"
-  studentName = msg['subject'].split('for')[1].strip()
-  target = open('test' + str(random.randrange(1, 998+1)), 'w+')
-  target.write(studentName)
-  target.close()
+  # categorize message as signup or cancellation
+  if msg['subject'] == 'Advising Signup Cancellation':
+    signup = False
+  else:
+    signup = True
+  if signup:
+    # pull full student name from email. example: "Brabham, Matthew Lawrence"
+    studentName = msg['subject'].split('for')[1].strip()
   # pull date from email
   for line in msg.get_payload().split('\n'):
     # pull appointment date
@@ -84,19 +87,25 @@ def main():
   # save appointment start and end time
   start = dt.datetime(year, month, day, startHour, startMinute, 0, 0, tz)
   end = dt.datetime(year, month, day, endHour, endMinute, 0, 0, tz)
-  # subject will populate Subject of email and Summary of invite
-  subject = "Advising Appointment for " + studentName
+  # email body will be empty
   body = ""
   # build icalendar object
   cal = icalendar.Calendar()
-  cal.add('prodid', '-//AAAH//engr.orst.edu//')
-  cal.add('version', '2.0')
-  cal.add('method', "REQUEST")
+  cal.add('prodid', "-//AAAH//engr.orst.edu//")
+  cal.add('version', "2.0")
+  if signup:
+    subject = "Advising Appointment for " + studentName
+    cal.add('method', 'REQUEST')
+    cal.add('status', 'confirmed')
+  else:
+    subject = "Appointment Cancellation"
+    cal.add('method', 'CANCEL')
+    cal.add('status', 'cancelled')
+  # build the event
   event = icalendar.Event()
   for attendee in you:
     event.add('attendee', attendee)
   event.add('organizer', me)
-  event.add('status', "confirmed")
   event.add('category', "Event")
   event.add('summary', subject)
   event.add('description', body)
@@ -104,36 +113,39 @@ def main():
   event.add('dtstart', start)
   event.add('dtend', end)
   event.add('dtstamp', tz.localize(dt.datetime.now()))
-  event['uid'] = 'mcgrath' + str(random.randrange(1, 999998+1))
+  event['uid'] = 'mcgrath' + start.strftime("%Y%m%dT%H%M%S")
   event.add('priority', 5)
   event.add('sequence', 1)
   event.add('created', tz.localize(dt.datetime.now()))
-
+  # add the event to the icalendar object
   cal.add_component(event)
-
+  # build the email
   msg = email.MIMEMultipart.MIMEMultipart('alternative')
-
   msg["Subject"] = subject
   msg["From"] = me
   msg["To"] = ", ".join(you)
   msg["Content-class"] = "urn:content-classes:calendarmessage"
-
   msg.attach(email.MIMEText.MIMEText(body))
-
+  # build the icalendar invite attachment
   filename = "invite.ics"
-  part = email.MIMEBase.MIMEBase('text', "calendar", method="REQUEST", name=filename)
+  if signup:
+    part = email.MIMEBase.MIMEBase('text', 'calendar', 
+                                   method='REQUEST', name=filename)
+  else:
+    part = email.MIMEBase.MIMEBase('text', 'calendar',
+                                   method='CANCEL', name=filename)
   part.set_payload(cal.to_ical())
   email.Encoders.encode_base64(part)
   part.add_header('Content-Description', filename)
   part.add_header('Content-class', "urn:content-classes:calendarmessage")
   part.add_header("Filename", filename)
   part.add_header("Path", filename)
+  # attach the invite to the email
   msg.attach(part)
-
+  # send the email
   s = smtplib.SMTP("mail.oregonstate.edu")
-  s.sendmail(msg["From"], [msg["To"]], msg.as_string())
+  s.sendmail(msg['From'], [msg['To']], msg.as_string())
   s.quit()
-
   # update database
   updateDatabase()
 

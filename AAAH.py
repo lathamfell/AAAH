@@ -2,31 +2,7 @@ import curses
 import smtplib
 import random
 import re
-
-def sendCancellation():
-  # set email values
-  fromAddress = 'do.not.reply@engr.orst.edu'
-  studentAddress = 'felll@engr.orst.edu'
-  advisorAddress = 'lathamfell@gmail.com'
-  subject = 'Advising Signup Cancellation'
-  date = 'Thursday, November 15th, 2012'
-  timeStart = '11:00 am'
-  timeEnd = '11:15 am'
-  body = 'Advising Signup with Fell, Latham CANCELLED\n' \
-    'Name: Latham Fell\n' \
-    'Email: felll@engr.orst.edu\n' \
-    'Date: ' + date + '\n' \
-    'Time: ' + timeStart + ' - ' + timeEnd + '\n\n\n' \
-    'Please contact support@engr.oregonstate.edu if you ' \
-    'experience problems'
-  # construct email in proper format
-  msg = 'From: ' + fromAddress + '\n' + \
-        'To: ' + studentAddress + ' ' + advisorAddress + '\n' + \
-        'Subject: ' + subject + '\n\n' + \
-        body
-  # send the email
-  s = smtplib.SMTP('mail.oregonstate.edu')
-  s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
+from AAAHEmailSender import sendSignup, sendCancellation
 
 def main():
   # string to hold appointment ID
@@ -51,7 +27,6 @@ def main():
   # screen.scrollok(1)
   # user input loop
   while True:
-
     # reset padCmd
     padCmd = ''
     screen.clear()
