@@ -18,6 +18,7 @@ def sendSignup():
   fromAddress = "do.not.reply@engr.orst.edu"
   studentName = "Brabham, Matthew Lawrence"
   studentAddress = "latham.fell@base2s.com"
+  # in production, advisorAddress will be dmcgrath@eecs.oregonstate.edu
   advisorAddress = "felll@engr.orst.edu"
   subject = "Advising Signup with McGrath, D Kevin confirmed for " + studentName
   date = "Friday, January 30th, 2015"
@@ -41,21 +42,23 @@ def sendSignup():
 
 def sendCancellation():
   # set email values
-  fromAddress = 'do.not.reply@engr.orst.edu'
-  studentAddress = 'felll@engr.orst.edu'
-  advisorAddress = 'lathamfell@gmail.com'
-  subject = 'Advising Signup Cancellation'
-  date = 'Thursday, November 15th, 2012'
-  timeStart = '11:00 am'
-  timeEnd = '11:15 am'
+  fromAddress = "do.not.reply@engr.orst.edu"
+  studentName = "Brabham, Matthew Lawrence"
+  studentAddress = "latham.fell@base2s.com"
+  # in production, advisorAddress will be dmcgrath@eecs.oregonstate.edu
+  advisorAddress = "felll@engr.orst.edu"
+  subject = "Advising Signup Cancellation"
+  date = "Friday, January 30th, 2015"
+  timeStart = "3:00 pm"
+  timeEnd = "3:30 pm"
   body = 'Advising Signup with Fell, Latham CANCELLED\n' \
-    'Name: Latham Fell\n' \
-    'Email: felll@engr.orst.edu\n' \
+    'Name: ' + studentName + '\n' \
+    'Email: ' + studentAddress + '\n' \
     'Date: ' + date + '\n' \
     'Time: ' + timeStart + ' - ' + timeEnd + '\n\n\n' \
     'Please contact support@engr.oregonstate.edu if you ' \
     'experience problems'
-  # construct email in proper format
+  # construct email
   msg = 'From: ' + fromAddress + '\n' + \
         'To: ' + studentAddress + ' ' + advisorAddress + '\n' + \
         'Subject: ' + subject + '\n\n' + \

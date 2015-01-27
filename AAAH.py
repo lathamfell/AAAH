@@ -2,7 +2,7 @@ import curses
 import smtplib
 import random
 import re
-from AAAHEmailSender import sendSignup, sendCancellation
+from AAAHEmail import sendCancellation
 
 def main():
   # string to hold appointment ID
