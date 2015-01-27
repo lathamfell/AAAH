@@ -1,15 +1,15 @@
-import MySQLdb
 import smtplib
 import email
 import time
 import email.MIMEMultipart
 import email.MIMEBase
 import email.MIMEText
-import datetime as dt
+import datetime
 import icalendar
 import pytz
 import random
 import sys
+from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
 
 def main():
   # set timezone
@@ -85,77 +85,89 @@ def main():
       if endCycle == 'pm':
         endHour += 12
   # save appointment start and end time
-  start = dt.datetime(year, month, day, startHour, startMinute, 0, 0, tz)
-  end = dt.datetime(year, month, day, endHour, endMinute, 0, 0, tz)
-  # email body will be empty
-  body = ""
-  # build icalendar object
-  cal = icalendar.Calendar()
-  cal.add('prodid', "-//AAAH//engr.orst.edu//")
-  cal.add('version', "2.0")
-  if signup:
-    subject = "Advising Appointment for " + studentName
-    cal.add('method', 'REQUEST')
-    cal.add('status', 'confirmed')
+  start = datetime.datetime(year, month, day, startHour, startMinute, 0, 0, tz)
+  end = datetime.datetime(year, month, day, endHour, endMinute, 0, 0, tz)
+  # create uid
+  uid = 'mcgrath' + start.strftime("%Y%m%dT%H%M%S")
+  # check for invalid requests
+  if signup and appointmentExists(uid):
+    # appointment slot taken. Ignore email
+    pass
+  elif not signup and not appointmentExists(uid):
+    # cancellation for appointment that doesn't exist. Ignore email
+    pass
   else:
-    subject = "Appointment Cancellation"
-    cal.add('method', 'CANCEL')
-    cal.add('status', 'cancelled')
-  # build the event
-  event = icalendar.Event()
-  for attendee in you:
-    event.add('attendee', attendee)
-  event.add('organizer', me)
-  event.add('category', "Event")
-  event.add('summary', subject)
-  event.add('description', body)
-  event.add('location', "Office of Kevin McGrath")
-  event.add('dtstart', start)
-  event.add('dtend', end)
-  event.add('dtstamp', tz.localize(dt.datetime.now()))
-  event['uid'] = 'mcgrath' + start.strftime("%Y%m%dT%H%M%S")
-  event.add('priority', 5)
-  event.add('sequence', 1)
-  event.add('created', tz.localize(dt.datetime.now()))
-  # add the event to the icalendar object
-  cal.add_component(event)
-  # build the email
-  msg = email.MIMEMultipart.MIMEMultipart('alternative')
-  msg["Subject"] = subject
-  msg["From"] = me
-  msg["To"] = ", ".join(you)
-  msg["Content-class"] = "urn:content-classes:calendarmessage"
-  msg.attach(email.MIMEText.MIMEText(body))
-  # build the icalendar invite attachment
-  filename = "invite.ics"
-  if signup:
-    part = email.MIMEBase.MIMEBase('text', 'calendar', 
-                                   method='REQUEST', name=filename)
-  else:
-    part = email.MIMEBase.MIMEBase('text', 'calendar',
-                                   method='CANCEL', name=filename)
-  part.set_payload(cal.to_ical())
-  email.Encoders.encode_base64(part)
-  part.add_header('Content-Description', filename)
-  part.add_header('Content-class', "urn:content-classes:calendarmessage")
-  part.add_header("Filename", filename)
-  part.add_header("Path", filename)
-  # attach the invite to the email
-  msg.attach(part)
-  # send the email
-  s = smtplib.SMTP("mail.oregonstate.edu")
-  s.sendmail(msg['From'], [msg['To']], msg.as_string())
-  s.quit()
-  # update database
-  updateDatabase()
-
-def updateDatabase():
-  # db = MySQLdb.connect('oniddb.cws.oregonstate.edu', 
-  #                      'felll-db',
-  #                      'Qo8KoTmgkOUFj7bs', 
-  #                      'felll-db')
-  # cur = db.cursor()
-  pass
+    # request is valid. Process email
+    # set outgoing email body
+    body = ""
+    # build icalendar object
+    cal = icalendar.Calendar()
+    cal.add('prodid', "-//AAAH//engr.orst.edu//")
+    cal.add('version', "2.0")
+    if signup:
+      subject = "Advising Appointment for " + studentName
+      cal.add('method', 'REQUEST')
+      cal.add('status', 'confirmed')
+    else:
+      subject = "Appointment Cancellation"
+      cal.add('method', 'CANCEL')
+      cal.add('status', 'cancelled')
+    # build the event
+    event = icalendar.Event()
+    for attendee in you:
+      event.add('attendee', attendee)
+    event.add('organizer', me)
+    event.add('category', "Event")
+    event.add('summary', subject)
+    event.add('description', body)
+    event.add('location', "Office of Kevin McGrath")
+    event.add('dtstart', start)
+    event.add('dtend', end)
+    event.add('dtstamp', tz.localize(datetime.datetime.now()))
+    event['uid'] = uid
+    event.add('priority', 5)
+    event.add('sequence', 1)
+    event.add('created', tz.localize(datetime.datetime.now()))
+    # add the event to the icalendar object
+    cal.add_component(event)
+    # build the outgoing email
+    msg = email.MIMEMultipart.MIMEMultipart('alternative')
+    msg["Subject"] = subject
+    msg["From"] = me
+    msg["To"] = ", ".join(you)
+    msg["Content-class"] = "urn:content-classes:calendarmessage"
+    msg.attach(email.MIMEText.MIMEText(body))
+    # build the icalendar invite attachment
+    filename = "invite.ics"
+    if signup:
+      part = email.MIMEBase.MIMEBase('text', 'calendar', 
+                                     method='REQUEST', name=filename)
+    else:
+      part = email.MIMEBase.MIMEBase('text', 'calendar',
+                                     method='CANCEL', name=filename)
+    part.set_payload(cal.to_ical())
+    email.Encoders.encode_base64(part)
+    part.add_header('Content-Description', filename)
+    part.add_header('Content-class', "urn:content-classes:calendarmessage")
+    part.add_header("Filename", filename)
+    part.add_header("Path", filename)
+    # attach the invite to the outgoing email
+    msg.attach(part)
+    # send the email
+    s = smtplib.SMTP("mail.oregonstate.edu")
+    s.sendmail(msg['From'], [msg['To']], msg.as_string())
+    s.quit()
+    # update the database
+    if signup:
+      addAppointment(uid, 
+                     studentName, 
+                     studentAddress,
+                     advisorName,
+                     advisorAddress,
+                     start,
+                     end)
+    else:
+      removeAppointment(uid)
 
 if __name__ == '__main__':
   main()

@@ -1,8 +1,8 @@
 import smtplib
 
 def main():
-  print "Enter s to send signup.\n" \
-        "Enter c to send cancellation.\n" \
+  print "Enter s to send a test signup.\n" \
+        "Enter c to send a matching test cancellation.\n" \
         "Enter q to exit."
   while True:
     command = raw_input()
