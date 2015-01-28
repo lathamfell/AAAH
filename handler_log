@@ -1,0 +1,12 @@
+
+2015-01-28 09:46:02.850880-08:00
+main function called
+2015-01-28 09:46:02.876837-08:00
+2015-01-28 09:47:47.422129-08:00 : main function called
+2015-01-28 09:47:47.444439-08:00 : ignored email for busy appointment slot
+2015-01-28 09:54:59.755748-08:00 : main function called
+2015-01-28 09:55:35.431375-08:00 : main function called
+2015-01-28 10:13:38.051746-08:00 : main function called
+2015-01-28 10:13:54.569525-08:00 : main function called
+2015-01-28 10:15:27.217705-08:00 : main function called
+2015-01-28 10:17:26.666898-08:00 : ignored cancellation email for non-existent appmt

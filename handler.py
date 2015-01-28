@@ -14,6 +14,10 @@ from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
 def main():
   # set timezone
   tz = pytz.timezone('PST8PDT')
+  # # write to debug log
+  # with open("handler_log", 'a') as logfile:
+  #   logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+  #   logfile.write(" : main function called")
   # bring message in from pipe as an array
   msg_pipe = sys.stdin.readlines()
   # join every array element into a single string
@@ -22,19 +26,25 @@ def main():
   msg = email.message_from_string(msg_string)
   # send icalendar invite
   # in production, 'me' will be dmcgrath@eecs.oregonstate.edu
-  me = 'felll@engr.orst.edu'
+  me = "felll@engr.orst.edu"
   # in production, 'you' will be dmcgrath@eecs.oregonstate.edu
-  you = ['lathamfell@gmail.com']
+  you = ["lathamfell@gmail.com", "latham.fell@base2s.com"]
   # categorize message as signup or cancellation
-  if msg['subject'] == 'Advising Signup Cancellation':
+  if msg['subject'] == "Advising Signup Cancellation":
     signup = False
   else:
     signup = True
-  if signup:
-    # pull full student name from email. example: "Brabham, Matthew Lawrence"
-    studentName = msg['subject'].split('for')[1].strip()
-  # pull date from email
+  # parse email body for data
   for line in msg.get_payload().split('\n'):
+    # pull student full name. Example: "Brabham, Matthew Lawrence"
+    if line.startswith('Name:'):
+      studentName = line[5:].strip()
+    # pull student email address
+    if line.startswith('Email:'):
+      studentAddress = line[6:].strip()
+    # set advisor name and address
+    advisorName = "McGrath, D Kevin"
+    advisorAddress = "dmcgrath@eecs.oregonstate.edu"
     # pull appointment date
     if line.startswith('Date:'):
       date = line[5:].strip()
@@ -88,28 +98,36 @@ def main():
   start = datetime.datetime(year, month, day, startHour, startMinute, 0, 0, tz)
   end = datetime.datetime(year, month, day, endHour, endMinute, 0, 0, tz)
   # create uid
-  uid = 'mcgrath' + start.strftime("%Y%m%dT%H%M%S")
+  uid = "dmcgrath" + start.strftime("%Y%m%dT%H%M%S")
   # check for invalid requests
   if signup and appointmentExists(uid):
     # appointment slot taken. Ignore email
-    pass
+    # write to log for debugging purposes
+    with open("handler_log", 'a') as logfile:
+      logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+      logfile.write(" : ignored email for busy appointment slot")
   elif not signup and not appointmentExists(uid):
     # cancellation for appointment that doesn't exist. Ignore email
-    pass
+    # write to log for debugging purposes
+    with open("handler_log", 'a') as logfile:
+      logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+      logfile.write(" : ignored cancel email for non-existent appmt")
   else:
     # request is valid. Process email
-    # set outgoing email body
-    body = ""
     # build icalendar object
     cal = icalendar.Calendar()
     cal.add('prodid', "-//AAAH//engr.orst.edu//")
     cal.add('version', "2.0")
     if signup:
+      body = ""
       subject = "Advising Appointment for " + studentName
       cal.add('method', 'REQUEST')
       cal.add('status', 'confirmed')
     else:
-      subject = "Appointment Cancellation"
+      body = "Appointment Cancellation for " + studentName + '\n' + \
+             "When: " + date + " " + time + '\n' + \
+             "Where: Office of Kevin McGrath"
+      subject = "Appointment Cancellation for " + studentName
       cal.add('method', 'CANCEL')
       cal.add('status', 'cancelled')
     # build the event
