@@ -14,10 +14,10 @@ from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
 def main():
   # set timezone
   tz = pytz.timezone('PST8PDT')
-  # # write to debug log
-  # with open("handler_log", 'a') as logfile:
-  #   logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-  #   logfile.write(" : main function called")
+  # write to debug log
+  with open("handler_log", 'a') as logfile:
+    logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+    logfile.write(" : main function called")
   # bring message in from pipe as an array
   msg_pipe = sys.stdin.readlines()
   # join every array element into a single string
@@ -184,8 +184,16 @@ def main():
                      advisorAddress,
                      start,
                      end)
+      # write to log for debugging purposes
+      with open("handler_log", 'a') as logfile:
+        logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+        logfile.write(" : processed signup email " + uid)
     else:
       removeAppointment(uid)
+      # write to log for debugging purposes
+      with open("handler_log", 'a') as logfile:
+        logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+        logfile.write(" : processed cancel email " + uid)
 
 if __name__ == '__main__':
   main()
