@@ -15,7 +15,7 @@ def main():
   # set timezone
   tz = pytz.timezone('PST8PDT')
   # write to debug log
-  with open("handler_log", 'a') as logfile:
+  with open("../AAAH/handler_log", 'a') as logfile:
     logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
     logfile.write(" : main function called")
   # bring message in from pipe as an array
@@ -47,10 +47,10 @@ def main():
     advisorAddress = "dmcgrath@eecs.oregonstate.edu"
     # pull appointment date
     if line.startswith('Date:'):
-      date = line[5:].strip()
-      day = int(date.split(',')[1].split(' ')[2][:-2].strip())
-      year = int(date.split(',')[2].strip())
-      monthString = date.split(',')[1].split(' ')[1].strip()
+      dateWithDay = line[5:].strip()
+      day = int(dateWithDay.split(',')[1].split(' ')[2][:-2].strip())
+      year = int(dateWithDay.split(',')[2].strip())
+      monthString = dateWithDay.split(',')[1].split(' ')[1].strip()
       if monthString == 'January':
         month = 1
       elif monthString == 'February':
@@ -81,35 +81,37 @@ def main():
     if line.startswith('Time:'):
       time = line[5:].strip()
       # get start time data
-      start = time.split('-')[0].strip()
-      startHour = int(start.split(':')[0].strip())
-      startMinute = int(start.split(':')[1][:2].strip())
-      startCycle = start.split()[1]
+      startTime12H = time.split('-')[0].strip()
+      startHour = int(startTime12H.split(':')[0].strip())
+      startMinute = int(startTime12H.split(':')[1][:2].strip())
+      startCycle = startTime12H[-2:]
       if startCycle == 'pm':
         startHour += 12
       # get end time data
-      end = time.split('-')[1].strip()
-      endHour = int(end.split(':')[0].strip())
-      endMinute = int(end.split(':')[1][:2].strip())
-      endCycle = end.split()[1]
+      endTime12H = time.split('-')[1].strip()
+      endHour = int(endTime12H.split(':')[0].strip())
+      endMinute = int(endTime12H.split(':')[1][:2].strip())
+      endCycle = endTime12H[-2:]
       if endCycle == 'pm':
         endHour += 12
   # save appointment start and end time
-  start = datetime.datetime(year, month, day, startHour, startMinute, 0, 0, tz)
-  end = datetime.datetime(year, month, day, endHour, endMinute, 0, 0, tz)
+  startDatetime = datetime.datetime(year, month, day, 
+                  startHour, startMinute, 0, 0, tz)
+  endDatetime = datetime.datetime(year, month, day, 
+                endHour, endMinute, 0, 0, tz)
   # create uid
-  uid = "dmcgrath" + start.strftime("%Y%m%dT%H%M%S")
+  uid = startDatetime.strftime("%y%m%d%H%M")
   # check for invalid requests
   if signup and appointmentExists(uid):
     # appointment slot taken. Ignore email
     # write to log for debugging purposes
-    with open("handler_log", 'a') as logfile:
+    with open("../AAAH/handler_log", 'a') as logfile:
       logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
       logfile.write(" : ignored email for busy appointment slot")
   elif not signup and not appointmentExists(uid):
     # cancellation for appointment that doesn't exist. Ignore email
     # write to log for debugging purposes
-    with open("handler_log", 'a') as logfile:
+    with open("../AAAH/handler_log", 'a') as logfile:
       logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
       logfile.write(" : ignored cancel email for non-existent appmt")
   else:
@@ -125,7 +127,7 @@ def main():
       cal.add('status', 'confirmed')
     else:
       body = "Appointment Cancellation for " + studentName + '\n' + \
-             "When: " + date + " " + time + '\n' + \
+             "When: " + dateWithDay + '\n' + \
              "Where: Office of Kevin McGrath"
       subject = "Appointment Cancellation for " + studentName
       cal.add('method', 'CANCEL')
@@ -139,8 +141,8 @@ def main():
     event.add('summary', subject)
     event.add('description', body)
     event.add('location', "Office of Kevin McGrath")
-    event.add('dtstart', start)
-    event.add('dtend', end)
+    event.add('dtstart', startDatetime)
+    event.add('dtend', endDatetime)
     event.add('dtstamp', tz.localize(datetime.datetime.now()))
     event['uid'] = uid
     event.add('priority', 5)
@@ -182,16 +184,19 @@ def main():
                      studentAddress,
                      advisorName,
                      advisorAddress,
-                     start,
-                     end)
+                     str(startDatetime),
+                     str(endDatetime),
+                     dateWithDay,
+                     startTime12H,
+                     endTime12H)
       # write to log for debugging purposes
-      with open("handler_log", 'a') as logfile:
+      with open("../AAAH/handler_log", 'a') as logfile:
         logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
         logfile.write(" : processed signup email " + uid)
     else:
       removeAppointment(uid)
       # write to log for debugging purposes
-      with open("handler_log", 'a') as logfile:
+      with open("../AAAH/handler_log", 'a') as logfile:
         logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
         logfile.write(" : processed cancel email " + uid)
 

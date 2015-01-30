@@ -7,8 +7,11 @@
 # `studentAddress` VARCHAR( 255 ) NOT NULL ,
 # `advisorName` VARCHAR( 255 ) NOT NULL ,
 # `advisorAddress` VARCHAR( 255 ) NOT NULL ,
-# `start` DATETIME NOT NULL ,
-# `end` DATETIME NOT NULL ,
+# `startDatetime` VARCHAR( 255 ) NOT NULL ,
+# `endDatetime` VARCHAR( 255 ) NOT NULL,
+# 'dateWithDay' VARCHAR( 255 ) NOT NULL,
+# 'startTime12H' VARCHAR( 255 ) NOT NULL,
+# 'endTime12H' VARCHAR( 255 ) NOT NULL
 # PRIMARY KEY ( `uid` )
 # ) ENGINE = InnoDB 
 
@@ -20,55 +23,93 @@
 # `studentAddress` ,
 # `advisorName` ,
 # `advisorAddress` ,
-# `start` ,
-# `end`
+# `startDatetime` ,
+# `endDatetime` ,
+# 'dateWithDay' ,
+# 'startTime12H' ,
+# 'endTime12H'
 # )
 # VALUES (
-# 'mcgrath20150125T1530', 
-# 'Brabham, Matthew Lawrence', 
-# 'mbrabham@onid.oregonstate.edu', 
-# 'McGrath, D Kevin', 
-# 'mcgrath@eecs.oregonstate.edu', 
-# '2015-01-25 15:30:00', 
-# '2015-01-25 16:30:00'
+# 'mcgrath20150125T1530' , 
+# 'Brabham, Matthew Lawrence' , 
+# 'mbrabham@onid.oregonstate.edu' , 
+# 'McGrath, D Kevin' , 
+# 'mcgrath@eecs.oregonstate.edu' , 
+# '20150330T150000' , 
+# '20150330T153000' ,
+# 'Monday, January 30th, 2015'
+# '3:00pm',
+# '3:30pm'
 # );
 
 # # Delete appointment
 # DELETE FROM `appointment` 
-# WHERE CONVERT(`appointment`.`uid` USING utf8) = 'mcgrath20150125T1530' 
+# WHERE CONVERT(`appointment`.`uid` USING utf8) = '1501251500' 
 # LIMIT 1;
 
 import MySQLdb
 import json
 
 def main():
-  print "Enter a to add a test appointment.\n" \
-        "Enter r to remove the test appointment.\n" \
+  print "Enter a to add a test appointment (set attributes in code first).\n" \
+        "Enter r to remove an appointment (set uid in code first).\n" \
+        "Enter c to clear all appointments.\n" \
         "Enter q to exit."
   while True:
     command = raw_input()
     if command == "a" or command == "A":
-      addAppointment("dmcgrath20150130T150002",
-                     "Brabham, Matthew Lawrence",
-                     "latham.fell@base2s.com",
+      addAppointment("1401301506",
+                     "Brabham, Matrhew Lawrence",
+                     "lathamfell@gmail.com",
                      "McGrath, D Kevin",
                      "felll@engr.orst.edu",
-                     "20150130T150000",
-                     "20150130T153000")
+                     "20150330T160000",
+                     "20150330T173000",
+                     "Monday, January 30th, 2015",
+                     "3:00pm",
+                     "3:30pm")
     elif command == "r" or command == "R":
-      removeAppointment("dmcgrath20150130T150002")
+      removeAppointment("1001301500")
+    elif command == "c" or command == "C":
+      removeAllAppointments()
     else:
       break
 
-def appointmentExists(uid):
+def appointmentCount():
   try:
-    appointmentsJSON = json.load(open("appointmentsList"))
+    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
+    return len(appointmentsJSON)
+  except:
+    # if error in opening file, there are no appointments yet
+    return 0
+
+def getAppointment(uid):
+  if appointmentExists(uid):
+    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
+    for i in xrange(len(appointmentsJSON)):
+      if appointmentsJSON[i]["uid"] == uid:
+        return appointmentsJSON[i]
+        break
+  else:
+    # return empty JSON list
+    return json.loads(json.dumps([]))
+
+def getAllAppointments():
+  if appointmentCount() > 0:
+    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
+    return appointmentsJSON
+  else:
+    # return empty JSON list
+    return json.loads(json.dumps([]))
+
+def appointmentExists(uid):
+  if appointmentCount() > 0:
+    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
     for appointment in appointmentsJSON:
       if appointment['uid'] == uid:
         return True
     return False
-  except:
-    # if error in opening file, there are no appointments yet
+  else:
     return False
 
 def addAppointment(uid, 
@@ -76,10 +117,13 @@ def addAppointment(uid,
                    studentAddress,
                    advisorName,
                    advisorAddress,
-                   start,
-                   end):
+                   startDatetime,
+                   endDatetime,
+                   dateWithDay,
+                   startTime12H,
+                   endTime12H):
   try:
-    appointmentsJSON = json.load(open("appointmentsList"))
+    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
     # appointment list already exists
     if not appointmentExists(uid):
       appointmentsJSON.append({'uid': uid,
@@ -87,30 +131,41 @@ def addAppointment(uid,
                                'studentAddress': studentAddress,
                                'advisorName': advisorName,
                                'advisorAddress': advisorAddress,
-                               'start': start,
-                               'end': end})
-    with open("appointmentsList", 'w+') as appointmentsList:
+                               'startDatetime': startDatetime,
+                               'endDatetime': endDatetime,
+                               'dateWithDay': dateWithDay,
+                               'startTime12H': startTime12H,
+                               'endTime12H': endTime12H })
+    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
       json.dump(appointmentsJSON, appointmentsList)
   except:
     # appointment list doesn't exist yet
-    with open("appointmentsList", 'w+') as appointmentsList:
+    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
       json.dump([{'uid': uid,
                  'studentName': studentName,
                  'studentAddress': studentAddress,
                  'advisorName': advisorName,
                  'advisorAddress': advisorAddress,
-                 'start': start,
-                 'end': end}], appointmentsList)
+                 'startDatetime': startDatetime,
+                 'endDatetime': endDatetime,
+                 'dateWithDay': dateWithDay,
+                 'startTime12H': startTime12H,
+                 'endTime12H': endTime12H }], appointmentsList)
 
 def removeAppointment(uid):
   if appointmentExists(uid):
-    appointmentsJSON = json.load(open("appointmentsList"))
+    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
     for i in xrange(len(appointmentsJSON)):
-      if appointmentsJSON[i]["uid"] == uid:
+      if appointmentsJSON[i]['uid'] == uid:
         appointmentsJSON.pop(i)
         break
-    with open("appointmentsList", 'w+') as appointmentsList:
+    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
       json.dump(appointmentsJSON, appointmentsList)
+
+def removeAllAppointments():
+  if appointmentCount() > 0:
+    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
+      json.dump([], appointmentsList)
 
 if __name__ == '__main__':
   main()

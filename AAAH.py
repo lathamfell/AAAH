@@ -3,10 +3,13 @@ import smtplib
 import random
 import re
 from AAAHEmail import sendCancellation
+from AAAHDatabase import appointmentCount, getAppointment, \
+                         getAllAppointments, appointmentExists
+from operator import itemgetter
 
 def main():
   # string to hold appointment ID
-  appmtID = ''
+  uid = ''
   # string to provide user feedback
   feedback = ''
   # first row of appointments to be displayed on pad
@@ -35,34 +38,36 @@ def main():
                   'Automated Advising Appointment Handler' \
                   '                     ',
                   curses.A_BOLD)
-    screen.addstr('\nID      ' \
-                  'Student                 ' \
-                  'Advisor                 ' \
+    screen.addstr('\nID          ' \
+                  'Student                                     ' \
                   'Date        ' \
                   'Start  ' \
                   'End  ', curses.A_UNDERLINE)
     # check how many appointments are in the database
-    appmtCount = 15
+    appmtCount = appointmentCount()
     # create pad
     pad = curses.newpad(appmtCount + 1, 80)
+    # pull all appointments from db and sort them
+    appmtList = getAllAppointments()
+    appmtList = sorted(appmtList, key=itemgetter('uid'))
     # write appointments to pad
-    for i in range(appmtCount):
+    for i in xrange(len(appmtList)):
       # initialize x position
       x = 0
       # set appointment variables
-      ID = i + 100000
-      studentUsername = 'felll'
-      advisorUsername = 'mcgrath'
-      date = '2015-01-20'
-      start = '14:20'
-      end = '15:20'
+      ID = appmtList[i]['uid']
+      studentName = appmtList[i]['studentName']
+      startDatetime = appmtList[i]['startDatetime']
+      date = startDatetime[:10]
+      startTime = startDatetime[11:16]
+      endDatetime = appmtList[i]['endDatetime']
+      endTime = endDatetime[11:16]
       # write appointments to pad
       pad.addstr(i, x, str(ID))
-      pad.addstr(i, x + 8, studentUsername)
-      pad.addstr(i, x + 32, advisorUsername)
+      pad.addstr(i, x + 12, studentName)
       pad.addstr(i, x + 56, date)
-      pad.addstr(i, x + 68, start)
-      pad.addstr(i, x + 75, end) 
+      pad.addstr(i, x + 68, startTime)
+      pad.addstr(i, x + 75, endTime) 
     # display the pad
     pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, 79)
     # pad lower border
@@ -74,7 +79,7 @@ def main():
     screen.addstr('\nTo quit, press q.')
     screen.addstr('\n\n' + feedback + '\n')
     screen.addstr('\nAppointment ID: ')
-    screen.addstr(appmtID)
+    screen.addstr(uid)
     screen.refresh()
     # get user input
     command = screen.getch()
@@ -95,30 +100,37 @@ def main():
       pad_row = 0
     # if backspace, delete a char from appointment ID string
     elif command == 8:
-      if len(appmtID) < 1:
+      if len(uid) < 1:
         pass
       else:
-        appmtID = appmtID[:len(appmtID) - 1]
+        uid = uid[:len(uid) - 1]
     # if Enter, look for appointment 
     elif command == 10:
-      if len(appmtID) == 0:
+      if len(uid) == 0:
         feedback = ''
-      elif len(appmtID) < 6 and len(appmtID) > 0:
+      elif len(uid) < 10 and len(uid) > 0:
         feedback = 'Appointment ID is too short'
-        appmtID = ''
+        uid = ''
       else:
-        appmtID = int(appmtID)
-        if appmtID < 100000 or appmtID > 150000:
+        if not appointmentExists(uid):
           feedback = 'That is not a valid appointment ID'
-          appmtID = ''
+          uid = ''
         else:
-          feedback = 'Cancellation email sent for appointment ' + str(appmtID)
-          sendCancellation()
-          appmtID = ''
+          # pull appointment from db
+          appointment = getAppointment(uid)
+          sendCancellation(appointment['studentName'],
+                           appointment['studentAddress'],
+                           appointment['advisorAddress'],
+                           appointment['dateWithDay'],
+                           appointment['startTime12H'],
+                           appointment['endTime12H'])
+          # give feedback
+          feedback = 'Cancellation email sent for appointment ' + uid
+          uid = ''
     # if digit, add it to appointment ID string
     try:
       if re.match('\d', chr(command)):
-        appmtID += chr(command)
+        uid += chr(command)
     except:
       pass
 
