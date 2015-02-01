@@ -28,7 +28,9 @@ def main():
   # in production, 'me' will be dmcgrath@eecs.oregonstate.edu
   me = "felll@engr.orst.edu"
   # in production, 'you' will be dmcgrath@eecs.oregonstate.edu
-  you = ["lathamfell@gmail.com", "latham.fell@base2s.com"]
+  # For some reason, if multiple emails are entered here, only the first
+  #   email will receive the icalendar invite.  So just use one email here
+  you = ["lathamfell@gmail.com"]
   # categorize message as signup or cancellation
   if msg['subject'] == "Advising Signup Cancellation":
     signup = False
@@ -44,7 +46,8 @@ def main():
       studentAddress = line[6:].strip()
     # set advisor name and address
     advisorName = "McGrath, D Kevin"
-    advisorAddress = "dmcgrath@eecs.oregonstate.edu"
+    # in production, advisorAddress will be dmcgrath@eecs.oregonstate.edu
+    advisorAddress = "felll@engr.orst.edu"
     # pull appointment date
     if line.startswith('Date:'):
       dateWithDay = line[5:].strip()
@@ -118,7 +121,7 @@ def main():
     # request is valid. Process email
     # build icalendar object
     cal = icalendar.Calendar()
-    cal.add('prodid', "-//AAAH//engr.orst.edu//")
+    cal.add('prodid', "-//Google Inc//Google Calendar 70.9054//EN")
     cal.add('version', "2.0")
     if signup:
       body = ""
@@ -155,6 +158,7 @@ def main():
     msg["Subject"] = subject
     msg["From"] = me
     msg["To"] = ", ".join(you)
+    msg["Date"] = email.utils.formatdate(localtime=True)
     msg["Content-class"] = "urn:content-classes:calendarmessage"
     msg.attach(email.MIMEText.MIMEText(body))
     # build the icalendar invite attachment

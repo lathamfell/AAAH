@@ -6,7 +6,7 @@ import random
 def main():
   print "Enter s to send a test signup.\n" \
         "Enter t to send 10 test signups.\n" \
-        "Enter c to send a matching test cancellation.\n" \
+        "Enter c to send a test cancellation.\n" \
         "Enter q to exit."
   while True:
     command = raw_input()
@@ -15,7 +15,12 @@ def main():
     elif command == "t" or command == "T":
       sendSignup(10)
     elif command == "c" or command == "C":
-      sendCancellation()
+      sendCancellation('Brabham, Matthew Lawrence',
+                       'lathamfell@gmail.com',
+                       'felll@engr.orst.edu',
+                       'Friday, January 30th, 2015',
+                       '3:00pm',
+                       '3:30pm')
     else:
       break
 
@@ -26,12 +31,12 @@ def sendSignup(iterations):
     studentName = names.get_last_name() + ", " + \
                   names.get_first_name() + " " + \
                   names.get_first_name()
-    studentAddress = "latham.fell@base2s.com"
+    studentAddress = "felll@onid.oregonstate.edu"
     # in production, advisorAddress will be dmcgrath@eecs.oregonstate.edu
     advisorAddress = "felll@engr.orst.edu"
     subject = "Advising Signup with McGrath, D Kevin confirmed for " + studentName
     # pick a random year
-    year = random.randrange(2015, 2017 + 1)
+    year = random.randrange(2015, 2016 + 1)
     # pick a random month
     month = random.randrange(1, 12 + 1)
     # pick a random day in that month
