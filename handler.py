@@ -9,6 +9,7 @@ import icalendar
 import pytz
 import random
 import sys
+import getpass
 from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
 
 def main():
@@ -25,12 +26,15 @@ def main():
   # turn string into message object
   msg = email.message_from_string(msg_string)
   # send icalendar invite
-  # in production, 'me' will be dmcgrath@eecs.oregonstate.edu
-  me = "felll@engr.orst.edu"
-  # in production, 'you' will be dmcgrath@eecs.oregonstate.edu
+  # 
+  # user_string = "felll@engr.orst.edu"
+  user_string = getpass.getuser() + "@engr.orst.edu"
+  # 
   # For some reason, if multiple emails are entered here, only the first
   #   email will receive the icalendar invite.  So just use one email here
-  you = ["lathamfell@gmail.com"]
+  # message_recipiant = ["lathamfell@gmail.com"]
+  # invite should be sent to the same ENGR account
+  message_recipiant = user_string
   # categorize message as signup or cancellation
   if msg['subject'] == "Advising Signup Cancellation":
     signup = False
@@ -38,16 +42,19 @@ def main():
     signup = True
   # parse email body for data
   for line in msg.get_payload().split('\n'):
+    # set advisor name and address
+    # advisorName = "McGrath, D Kevin"
+    if line.startswith('Advising Signup with '):
+      advisorName = line[21:].strip()
+      advisorName = advisorName[:-10]
     # pull student full name. Example: "Brabham, Matthew Lawrence"
     if line.startswith('Name:'):
       studentName = line[5:].strip()
     # pull student email address
     if line.startswith('Email:'):
       studentAddress = line[6:].strip()
-    # set advisor name and address
-    advisorName = "McGrath, D Kevin"
-    # in production, advisorAddress will be dmcgrath@eecs.oregonstate.edu
-    advisorAddress = "felll@engr.orst.edu"
+    # set advisor email address to this user's email
+    advisorAddress = user_string
     # pull appointment date
     if line.startswith('Date:'):
       dateWithDay = line[5:].strip()
@@ -131,15 +138,15 @@ def main():
     else:
       body = "Appointment Cancellation for " + studentName + '\n' + \
              "When: " + dateWithDay + '\n' + \
-             "Where: Office of Kevin McGrath"
+             "Where: Office of " + advisor_string
       subject = "Appointment Cancellation for " + studentName
       cal.add('method', 'CANCEL')
       cal.add('status', 'cancelled')
     # build the event
     event = icalendar.Event()
-    for attendee in you:
+    for attendee in message_recipiant:
       event.add('attendee', attendee)
-    event.add('organizer', me)
+    event.add('organizer', user_string)
     event.add('category', "Event")
     event.add('summary', subject)
     event.add('description', body)
@@ -156,8 +163,8 @@ def main():
     # build the outgoing email
     msg = email.MIMEMultipart.MIMEMultipart('alternative')
     msg["Subject"] = subject
-    msg["From"] = me
-    msg["To"] = ", ".join(you)
+    msg["From"] = user_string
+    msg["To"] = ", ".join(message_recipiant)
     msg["Date"] = email.utils.formatdate(localtime=True)
     msg["Content-class"] = "urn:content-classes:calendarmessage"
     msg.attach(email.MIMEText.MIMEText(body))
