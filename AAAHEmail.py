@@ -2,6 +2,11 @@ import smtplib
 import names
 import datetime
 import random
+import getpass
+
+studentAddress = "tjsander@gmail.com"
+advisorAddress = getpass.getuser() + "@engr.orst.edu"
+advisorName = "Sanders, Travis J."
 
 def main():
   print "Enter s to send a test signup.\n" \
@@ -16,9 +21,9 @@ def main():
       sendSignup(10)
     elif command == "c" or command == "C":
       sendCancellation('Brabham, Matthew Lawrence',
-                       'lathamfell@gmail.com',
-                       'felll@engr.orst.edu',
-                       'Friday, January 30th, 2015',
+                       studentAddress,
+                       advisorAddress,
+                       'Friday, July 24th, 2015',
                        '3:00pm',
                        '3:30pm')
     else:
@@ -31,10 +36,7 @@ def sendSignup(iterations):
     studentName = names.get_last_name() + ", " + \
                   names.get_first_name() + " " + \
                   names.get_first_name()
-    studentAddress = "felll@onid.oregonstate.edu"
-    # in production, advisorAddress will be dmcgrath@eecs.oregonstate.edu
-    advisorAddress = "felll@engr.orst.edu"
-    subject = "Advising Signup with McGrath, D Kevin confirmed for " + studentName
+    subject = "Advising Signup with " + advisorName + " confirmed for " + studentName
     # pick a random year
     year = random.randrange(2015, 2016 + 1)
     # pick a random month
@@ -81,7 +83,7 @@ def sendSignup(iterations):
     timeEndString = timeEndHourChar + ":" + \
                     timeEndMinuteString + \
                     timeEndCycle
-    body = 'Advising Signup with McGrath, D Kevin confirmed\n' \
+    body = 'Advising Signup with ' + advisorName + ' confirmed\n' \
       'Name: ' + studentName + '\n' \
       'Email: ' + studentAddress + '\n' \
       'Date: ' + dateString + '\n' \
@@ -90,7 +92,7 @@ def sendSignup(iterations):
       'experience problems'
     # construct email
     msg = 'From: ' + fromAddress + '\n' + \
-          'To: ' + studentAddress + ' ' + advisorAddress + '\n' + \
+          'To: ' + studentAddress + ', ' + advisorAddress + '\n' + \
           'Subject: ' + subject + '\n\n' + \
           body
     # send the email
