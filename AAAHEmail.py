@@ -3,10 +3,13 @@ import names
 import datetime
 import random
 import getpass
+import socket
 
+## CHANGE THESE VALUES TO TEST
 studentAddress = "tjsander@gmail.com"
-advisorAddress = getpass.getuser() + "@engr.orst.edu"
+advisorAddress = getpass.getuser() + "@" + socket.getfqdn()
 advisorName = "Sanders, Travis J."
+## CHANGE THESE VALUES TO TEST
 
 def main():
   print "Enter s to send a test signup.\n" \

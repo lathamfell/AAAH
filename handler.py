@@ -9,6 +9,7 @@ import icalendar
 import pytz
 import random
 import sys
+import socket
 import getpass
 from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
 
@@ -31,7 +32,7 @@ def main():
   msg = email.message_from_string(msg_string)
   
   # send icalendar invite
-  user_string = getpass.getuser() + "@engr.orst.edu"
+  user_string = getpass.getuser() + "@" + socket.getfqdn()
 
   # For some reason, if multiple emails are entered here, only the first
   #   email will receive the icalendar invite.  So just use one email here
@@ -184,7 +185,7 @@ def main():
     # build the outgoing email
     msg = email.MIMEMultipart.MIMEMultipart('alternative')
     msg["Subject"] = subject
-    msg["From"] = user_string
+    msg["From"] = "do.not.reply@engr.orst.edu"
     msg["To"] = ", ".join(message_recipiant)
     msg["Date"] = email.utils.formatdate(localtime=True)
     msg["Content-class"] = "urn:content-classes:calendarmessage"
