@@ -115,7 +115,7 @@ def sendCancellation(studentName, studentAddress, advisorAddress, dateWithDay, s
     'experience problems'
   # construct email
   msg = 'From: ' + fromAddress + '\n' + \
-        'To: ' + studentAddress + ' ' + advisorAddress + '\n' + \
+        'To: ' + studentAddress + ', ' + advisorAddress + '\n' + \
         'Subject: ' + subject + '\n\n' + \
         body
   # send the email
