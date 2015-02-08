@@ -52,13 +52,16 @@ import warnings
 import json
 
 def main():
-  print "Enter a to add a test appointment (set attributes in code first).\n" \
-        "Enter r to remove an appointment (set uid in code first).\n" \
+  print "Enter a to add a JSON test appointment (set attributes in code first).\n" \
+        "Enter r to remove a JSON appointment (set uid in code first).\n" \
+        "Enter s to add a SQL appointment (set attr in code first).\n" \
+        "Enter e to see if SQL appointment exists (set uid in code first).\n" \
+        "Enter d to drop the SQL table.\n" \
         "Enter c to clear all appointments.\n" \
         "Enter q to exit."
   while True:
     command = raw_input()
-    if command == "a" or command == "A":
+    if command == 'a' or command == 'A':
       addAppointment("1401301506",
                      "Brabham, Matrhew Lawrence",
                      "lathamfell@gmail.com",
@@ -69,12 +72,30 @@ def main():
                      "Monday, January 30th, 2015",
                      "3:00pm",
                      "3:30pm")
-    elif command == "r" or command == "R":
+    elif command == 'r' or command == 'R':
       removeAppointment("1001301500")
-    elif command == "c" or command == "C":
-      removeAllAppointments()
     elif command == 's' or command == 'S':
-      addAppointmentSQL()
+      addAppointmentSQL("1401301506",
+                        "Brabham, Matrhew Lawrence",
+                        "lathamfell@gmail.com",
+                        "McGrath, D Kevin",
+                        "felll@engr.orst.edu",
+                        "20150330T160000",
+                        "20150330T173000",
+                        "Monday, January 30th, 2015",
+                        "3:00pm",
+                        "3:30pm")
+    elif command == 'e' or command == 'E':
+      if appointmentExistsSQL("1401301506"):
+        print 'True'
+      elif not appointmentExistsSQL("1401301506"):
+        print 'False'
+      else:
+        print 'Error'
+    elif command == 'd' or command == 'D':
+      dropTable()
+    elif command == 'c' or command == 'C':
+      removeAllAppointments()
     else:
       break
 
@@ -112,6 +133,18 @@ def appointmentExists(uid):
       if appointment['uid'] == uid:
         return True
     return False
+  else:
+    return False
+
+def appointmentExistsSQL(uid):
+  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+  cursor = db.cursor()
+  sql = "SELECT COUNT(1) FROM APPOINTMENT \
+         WHERE UID = '%s'" % (uid)
+  cursor.execute(sql)
+  if cursor.fetchone()[0]:
+    return True
   else:
     return False
 
@@ -155,8 +188,16 @@ def addAppointment(uid,
                  'startTime12H': startTime12H,
                  'endTime12H': endTime12H }], appointmentsList)
 
-def addAppointmentSQL():
-  print 'in function'
+def addAppointmentSQL(uid, 
+                      studentName, 
+                      studentAddress,
+                      advisorName,
+                      advisorAddress,
+                      startDatetime,
+                      endDatetime,
+                      dateWithDay,
+                      startTime12H,
+                      endTime12H):
   # connect
   db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
                        'e9wwhXXyKxpWu7Hx', 'cs419-g2')
@@ -167,19 +208,58 @@ def addAppointmentSQL():
   cursor.execute("DROP TABLE IF EXISTS APPOINTMENT")
   sql = """CREATE TABLE APPOINTMENT (
            UID  VARCHAR(255) NOT NULL,
-           STUDENTNAME VARCHAR(255) NOT NULL,
-           STUDENTADDRESS VARCHAR(255) NOT NULL,
-           ADVISORNAME VARCHAR(255) NOT NULL,
-           ADVISORADDRESS VARCHAR(255) NOT NULL,
-           STARTDATETIME VARCHAR(255) NOT NULL,
-           ENDDATETIME VARCHAR(255) NOT NULL,
-           DATEWITHDAY VARCHAR(255) NOT NULL,
-           STARTTIME12H VARCHAR(255) NOT NULL,
-           ENDTIME12H VARCHAR(255) NOT NULL )"""
+           STUDENT_NAME VARCHAR(255) NOT NULL,
+           STUDENT_ADDRESS VARCHAR(255) NOT NULL,
+           ADVISOR_NAME VARCHAR(255) NOT NULL,
+           ADVISOR_ADDRESS VARCHAR(255) NOT NULL,
+           START_DATETIME VARCHAR(255) NOT NULL,
+           END_DATETIME VARCHAR(255) NOT NULL,
+           DATE_WITH_DAY VARCHAR(255) NOT NULL,
+           START_TIME_12H VARCHAR(255) NOT NULL,
+           END_TIME_12H VARCHAR(255) NOT NULL )"""
   cursor.execute(sql)
   # add the appointment
-  
+  sql = "INSERT INTO APPOINTMENT( \
+           UID, \
+           STUDENT_NAME, \
+           STUDENT_ADDRESS, \
+           ADVISOR_NAME, \
+           ADVISOR_ADDRESS, \
+           START_DATETIME, \
+           END_DATETIME, \
+           DATE_WITH_DAY, \
+           START_TIME_12H, \
+           END_TIME_12H ) \
+           VALUES ('%s', '%s', '%s', '%s', '%s', \
+                   '%s', '%s', '%s', '%s', '%s' )" % \
+                  (uid,
+                   studentName,
+                   studentAddress,
+                   advisorName,
+                   advisorAddress,
+                   startDatetime,
+                   endDatetime,
+                   dateWithDay,
+                   startTime12H,
+                   endTime12H )
+  try:
+    cursor.execute(sql)
+    db.commit()
+  except:
+    # rollback in case there was an error
+    db.rollback()
+  # disconnect
   db.close()
+
+def dropTable():
+  # connect
+  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+  # create new appointments table
+  cursor = db.cursor()
+  # disable warning issued when dropping table that doesn't exist
+  warnings.filterwarnings('ignore', 'Unknown table.*')
+  cursor.execute("DROP TABLE IF EXISTS APPOINTMENT")  
 
 def removeAppointment(uid):
   if appointmentExists(uid):
