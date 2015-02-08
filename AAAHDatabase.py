@@ -55,7 +55,9 @@ def main():
   print "Enter a to add a JSON test appointment (set attributes in code first).\n" \
         "Enter r to remove a JSON appointment (set uid in code first).\n" \
         "Enter s to add a SQL appointment (set attr in code first).\n" \
+        "Enter w to remove a SQL appointment (set uid in code first).\n" \
         "Enter e to see if SQL appointment exists (set uid in code first).\n" \
+        "Enter l to print the number of appointments in db.\n" \
         "Enter d to drop the SQL table.\n" \
         "Enter c to clear all appointments.\n" \
         "Enter q to exit."
@@ -85,6 +87,8 @@ def main():
                         "Monday, January 30th, 2015",
                         "3:00pm",
                         "3:30pm")
+    elif command == 'w' or command == 'W':
+      removeAppointmentSQL("1401301506")
     elif command == 'e' or command == 'E':
       if appointmentExistsSQL("1401301506"):
         print 'True'
@@ -92,6 +96,8 @@ def main():
         print 'False'
       else:
         print 'Error'
+    elif command == 'l' or command == 'L':
+      print appointmentCountSQL()
     elif command == 'd' or command == 'D':
       dropTable()
     elif command == 'c' or command == 'C':
@@ -107,6 +113,18 @@ def appointmentCount():
     # if error in opening file, there are no appointments yet
     return 0
 
+def appointmentCountSQL():
+  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+  cursor = db.cursor()
+  sql = "SELECT * FROM APPOINTMENT"
+  try:
+    cursor.execute(sql)
+    return cursor.rowcount
+  except:
+    # if table doesn't exist yet, there are 0 appointments
+    return 0
+
 def getAppointment(uid):
   if appointmentExists(uid):
     appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
@@ -118,6 +136,19 @@ def getAppointment(uid):
     # return empty JSON list
     return json.loads(json.dumps([]))
 
+def getAppointmentSQL(uid):
+  if appointmentExistsSQL(uid):
+    db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                         'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+    cursor = db.cursor()
+    sql = "SELECT COUNT(1) FROM APPOINTMENT \
+           WHERE UID = '%s'" % (uid)
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    return result
+  else:
+    return "Unexpected error while getting appointment " + uid
+
 def getAllAppointments():
   if appointmentCount() > 0:
     appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
@@ -125,6 +156,18 @@ def getAllAppointments():
   else:
     # return empty JSON list
     return json.loads(json.dumps([]))
+
+def getAllAppointmentsSQL():
+  if appointmentCount() > 0:
+    db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                         'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+    cursor = db.cursor()
+    sql = "SELECT * FROM APPOINTMENT"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return result  
+  else:
+    return "Unexpected error while getting all appointments"
 
 def appointmentExists(uid):
   if appointmentCount() > 0:
@@ -142,11 +185,14 @@ def appointmentExistsSQL(uid):
   cursor = db.cursor()
   sql = "SELECT COUNT(1) FROM APPOINTMENT \
          WHERE UID = '%s'" % (uid)
-  cursor.execute(sql)
-  if cursor.fetchone()[0]:
-    return True
-  else:
-    return False
+  try:
+    cursor.execute(sql)
+    if cursor.fetchone()[0]:
+      return True
+  except:
+    # catch exception generated if table doesn't exist
+    pass
+  return False
 
 def addAppointment(uid, 
                    studentName, 
@@ -249,17 +295,7 @@ def addAppointmentSQL(uid,
     # rollback in case there was an error
     db.rollback()
   # disconnect
-  db.close()
-
-def dropTable():
-  # connect
-  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
-                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
-  # create new appointments table
-  cursor = db.cursor()
-  # disable warning issued when dropping table that doesn't exist
-  warnings.filterwarnings('ignore', 'Unknown table.*')
-  cursor.execute("DROP TABLE IF EXISTS APPOINTMENT")  
+  db.close() 
 
 def removeAppointment(uid):
   if appointmentExists(uid):
@@ -271,10 +307,34 @@ def removeAppointment(uid):
     with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
       json.dump(appointmentsJSON, appointmentsList)
 
+def removeAppointmentSQL(uid):
+  # connect
+  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+  cursor = db.cursor()
+  sql = "DELETE FROM APPOINTMENT WHERE UID = '%s'" % (uid)
+  try:
+    cursor.execute(sql)
+    db.commit()
+  except:
+    # rollback in case there was an error
+    db.rollback()
+  # disconnect
+  db.close() 
+
 def removeAllAppointments():
   if appointmentCount() > 0:
     with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
       json.dump([], appointmentsList)
+
+def dropTable():
+  # connect
+  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+  cursor = db.cursor()
+  # disable warning issued when dropping table that doesn't exist
+  warnings.filterwarnings('ignore', 'Unknown table.*')
+  cursor.execute("DROP TABLE IF EXISTS APPOINTMENT") 
 
 if __name__ == '__main__':
   main()
