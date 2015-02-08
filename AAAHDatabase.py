@@ -48,6 +48,7 @@
 # LIMIT 1;
 
 import MySQLdb
+import warnings
 import json
 
 def main():
@@ -72,6 +73,8 @@ def main():
       removeAppointment("1001301500")
     elif command == "c" or command == "C":
       removeAllAppointments()
+    elif command == 's' or command == 'S':
+      addAppointmentSQL()
     else:
       break
 
@@ -151,6 +154,32 @@ def addAppointment(uid,
                  'dateWithDay': dateWithDay,
                  'startTime12H': startTime12H,
                  'endTime12H': endTime12H }], appointmentsList)
+
+def addAppointmentSQL():
+  print 'in function'
+  # connect
+  db = MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
+                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+  # create new appointments table
+  cursor = db.cursor()
+  # disable warning issued when dropping table that doesn't exist
+  warnings.filterwarnings('ignore', 'Unknown table.*')
+  cursor.execute("DROP TABLE IF EXISTS APPOINTMENT")
+  sql = """CREATE TABLE APPOINTMENT (
+           UID  VARCHAR(255) NOT NULL,
+           STUDENTNAME VARCHAR(255) NOT NULL,
+           STUDENTADDRESS VARCHAR(255) NOT NULL,
+           ADVISORNAME VARCHAR(255) NOT NULL,
+           ADVISORADDRESS VARCHAR(255) NOT NULL,
+           STARTDATETIME VARCHAR(255) NOT NULL,
+           ENDDATETIME VARCHAR(255) NOT NULL,
+           DATEWITHDAY VARCHAR(255) NOT NULL,
+           STARTTIME12H VARCHAR(255) NOT NULL,
+           ENDTIME12H VARCHAR(255) NOT NULL )"""
+  cursor.execute(sql)
+  # add the appointment
+  
+  db.close()
 
 def removeAppointment(uid):
   if appointmentExists(uid):
