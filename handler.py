@@ -157,7 +157,7 @@ def main():
     else:
       body = "Appointment Cancellation for " + studentName + '\n' + \
              "When: " + dateWithDay + '\n' + \
-             "Where: Office of " + advisor_string
+             "Where: Office of " + advisorName
       subject = "Appointment Cancellation for " + studentName
       cal.add('method', 'CANCEL')
       cal.add('status', 'cancelled')
