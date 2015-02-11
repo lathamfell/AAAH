@@ -6,9 +6,9 @@ import getpass
 import socket
 
 ## CHANGE THESE VALUES TO TEST
-studentAddress = "tjsander@gmail.com"
+studentAddress = "YOUREMAIL@gmail.com"
 advisorAddress = getpass.getuser() + "@" + socket.getfqdn()
-advisorName = "Sanders, Travis J."
+advisorName = "YOUR, NAME"
 ## CHANGE THESE VALUES TO TEST
 
 def main():
