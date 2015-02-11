@@ -147,7 +147,7 @@ def main():
     
     # build icalendar object
     cal = icalendar.Calendar()
-    cal.add('prodid', "-//Google Inc//Google Calendar 70.9054//EN")
+    cal.add('prodid', "-//CS419_W2015_Group_2//AAAH 1.0//EN")
     cal.add('version', "2.0")
     if signup:
       body = ""
