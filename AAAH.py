@@ -3,10 +3,12 @@ import smtplib
 import random
 import re
 from AAAHEmail import sendCancellation
+from AAAHDatabase import appointmentCount, getAppointment, \
+                         getAllAppointments, appointmentExists
 from AAAHDatabase import appointmentCountSQL, getAppointmentSQL, \
                          getAllAppointmentsSQL, appointmentExistsSQL, \
                          createTable
-#from operator import itemgetter
+from operator import itemgetter
 
 def main():
   # string to hold appointment ID
@@ -47,40 +49,64 @@ def main():
                   'Date        ' \
                   'Start  ' \
                   'End  ', curses.A_UNDERLINE)
+
+    """ This code block uses old JSON 'database' """
     # check how many appointments are in the database
-    appmtCount = appointmentCountSQL()
+    appmtCount = appointmentCount()
     # create pad
     pad = curses.newpad(appmtCount + 1, 80)
-    # pull all appointments from db and sort them
-    if appmtCount > 0:
-      appmtList = getAllAppointmentsSQL()
-    ##appmtList = sorted(appmtList, key=itemgetter('uid'))
+    # get the appointments and sort them
+    appmtList = getAllAppointments()
+    appmtList = sorted(appmtList, key=itemgetter('uid'))
     # write appointments to pad
     i = 0
-    ##for i in xrange(len(appmtList)):
-    for row in appmtList:
+    for i in xrange(len(appmtList)):
       # initialize x position
       x = 0
       # set appointment variables
-      ##ID = appmtList[i]['uid']
-      ID = row[0]
-      ##studentName = appmtList[i]['studentName']
-      studentName = row[1]
-      ##startDatetime = appmtList[i]['startDatetime']
-      startDatetime = row[5]
+      ID = appmtList[i]['uid']
+      studentName = appmtList[i]['studentName']
+      startDatetime = appmtList[i]['startDatetime']
       date = startDatetime[:10]
       startTime = startDatetime[11:16]
-      ##endDatetime = appmtList[i]['endDatetime']
-      endDatetime = row[6]
+      endDatetime = appmtList[i]['endDatetime']
       endTime = endDatetime[11:16]
       # write appointments to pad
-      ##pad.addstr(i, x, str(ID))
-      pad.addstr(i, x, ID)
+      pad.addstr(i, x, str(ID))
       pad.addstr(i, x + 12, studentName)
       pad.addstr(i, x + 56, date)
       pad.addstr(i, x + 68, startTime)
       pad.addstr(i, x + 75, endTime) 
-      i += 1
+
+    # """ This code block uses new MySQL database """
+    # # check how many appointments are in the database
+    # appmtCount = appointmentCountSQL()
+    # # create pad
+    # pad = curses.newpad(appmtCount + 1, 80)
+    # # pull all appointments from db and sort them
+    # if appmtCount > 0:
+    #   appmtList = getAllAppointmentsSQL()
+    # # write appointments to pad
+    # i = 0
+    # for row in appmtList:
+    #   # initialize x position
+    #   x = 0
+    #   # set appointment variables
+    #   ID = row[0]
+    #   studentName = row[1]
+    #   startDatetime = row[5]
+    #   date = startDatetime[:10]
+    #   startTime = startDatetime[11:16]
+    #   endDatetime = row[6]
+    #   endTime = endDatetime[11:16]
+    #   # write appointments to pad
+    #   pad.addstr(i, x, ID)
+    #   pad.addstr(i, x + 12, studentName)
+    #   pad.addstr(i, x + 56, date)
+    #   pad.addstr(i, x + 68, startTime)
+    #   pad.addstr(i, x + 75, endTime) 
+    #   i += 1
+
     # display the pad
     pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, 79)
     # pad lower border
