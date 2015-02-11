@@ -4,7 +4,7 @@ Created for Oregon State University Advising Appointments
 
 ## Quick Install
 
-    `git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc`
+    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc
 
 ## Installation
 
