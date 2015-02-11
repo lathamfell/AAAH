@@ -134,13 +134,13 @@ def main():
       logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
       logfile.write(" : ignored email for busy appointment slot")
 
-  elif not signup and not appointmentExists(uid):
-    # cancellation for appointment that doesn't exist. Ignore email
+  # elif not signup and not appointmentExists(uid):
+  #   # cancellation for appointment that doesn't exist. Ignore email
     
-    # write to log for debugging purposes
-    with open("../AAAH/handler_log", 'a') as logfile:
-      logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-      logfile.write(" : ignored cancel email for non-existent appmt")
+  #   # write to log for debugging purposes
+  #   with open("../AAAH/handler_log", 'a') as logfile:
+  #     logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+  #     logfile.write(" : ignored cancel email for non-existent appmt")
 
   else:
     # request is valid. Process email
