@@ -12,6 +12,7 @@ SHELL=/bin/sh
 AAAH=$HOME/AAAH
 
 :0:
+* ^From.*do.not.reply@engr.orst.edu
 * ^Subject.*Advising Signup Cancellation
 {
   # :0 c
@@ -22,6 +23,7 @@ AAAH=$HOME/AAAH
 }
 
 :0:
+* ^From.*do.not.reply@engr.orst.edu
 * ^Subject.*Advising Signup
 {
   # :0 c
