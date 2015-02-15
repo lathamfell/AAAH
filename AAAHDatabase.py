@@ -12,7 +12,7 @@ def main():
         "Enter l to print the number of appointments in db.\n" \
         "Enter i to create the SQL table.\n" \
         "Enter d to drop the SQL table.\n" \
-        "Enter c to clear all appointments.\n" \
+        "Enter c to clear all JSON appointments.\n" \
         "Enter q to exit."
   while True:
     command = raw_input()
@@ -309,7 +309,7 @@ def dropTable():
 
 def getConnection():
   return MySQLdb.connect('mysql.eecs.oregonstate.edu', 'cs419-g2', 
-                       'e9wwhXXyKxpWu7Hx', 'cs419-g2')
+                         'e9wwhXXyKxpWu7Hx', 'cs419-g2')
 
 if __name__ == '__main__':
   main()

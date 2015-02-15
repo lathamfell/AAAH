@@ -12,15 +12,20 @@ import sys
 import socket
 import getpass
 from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
+from AAAHDatabase import appointmentExistsSQL, addAppointmentSQL, \
+                         removeAppointmentSQL
+
+DEBUG = True  # set to False to turn off debug logging
 
 def main():
   # set timezone
   tz = pytz.timezone('PST8PDT')
   
-  # write to debug log
-  with open("../AAAH/handler_log", 'a') as logfile:
-    logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-    logfile.write(" : main function called")
+  if DEBUG:
+    # write to debug log
+    with open("../AAAH/handler_log", 'a') as logfile:
+      logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+      logfile.write(" : main function called")
   
   # bring message in from pipe as an array
   msg_pipe = sys.stdin.readlines()
@@ -129,18 +134,20 @@ def main():
   if signup and appointmentExists(uid):
     # appointment slot taken. Ignore email
     
-    # write to log for debugging purposes
-    with open("../AAAH/handler_log", 'a') as logfile:
-      logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-      logfile.write(" : ignored email for busy appointment slot")
+    if DEBUG:
+      # write to log for debugging purposes
+      with open("../AAAH/handler_log", 'a') as logfile:
+        logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+        logfile.write(" : ignored email for busy appointment slot")
 
   # elif not signup and not appointmentExists(uid):
   #   # cancellation for appointment that doesn't exist. Ignore email
     
   #   # write to log for debugging purposes
-  #   with open("../AAAH/handler_log", 'a') as logfile:
-  #     logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-  #     logfile.write(" : ignored cancel email for non-existent appmt")
+  #   if DEBUG:
+  #     with open("../AAAH/handler_log", 'a') as logfile:
+  #       logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+  #       logfile.write(" : ignored cancel email for non-existent appmt")
 
   else:
     # request is valid. Process email
@@ -226,14 +233,15 @@ def main():
                      dateWithDay,
                      startTime12H,
                      endTime12H)
-
-      # write to log for debugging purposes
-      with open("../AAAH/handler_log", 'a') as logfile:
-        logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-        logfile.write(" : processed signup email " + uid)
+      if DEBUG:
+        # write to log for debugging purposes
+        with open("../AAAH/handler_log", 'a') as logfile:
+          logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
+          logfile.write(" : processed signup email " + uid)
     else:
       removeAppointment(uid)
 
+    if DEBUG:
       # write to log for debugging purposes
       with open("../AAAH/handler_log", 'a') as logfile:
         logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
