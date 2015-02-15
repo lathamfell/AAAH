@@ -126,9 +126,9 @@ def getAppointmentSQL(uid):
   if appointmentExistsSQL(uid):
     db = getConnection()
     with closing(db.cursor()) as cur:
-      sql = "SELECT COUNT(1) FROM APPOINTMENT WHERE UID = '%s'" % (uid)
+      sql = "SELECT * FROM APPOINTMENT WHERE UID = '%s'" % (uid)
       cur.execute(sql)
-      result = cur.fetchall()
+      result = cur.fetchone()
       db.close()
       return result
   else:
