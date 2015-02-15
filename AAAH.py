@@ -45,10 +45,10 @@ def main():
                   '                     ',
                   curses.A_BOLD)
     screen.addstr('\nID          ' \
-                  'Student                                   ' \
+                  'Student                                  ' \
                   'Date        ' \
                   'Start  ' \
-                  'End    ', curses.A_UNDERLINE)
+                  'End     ', curses.A_UNDERLINE)
 
     # """ This code block uses old JSON 'database' """
     # # check how many appointments are in the database
@@ -95,16 +95,14 @@ def main():
         ID = row[0]
         studentName = row[1]
         startDatetime = row[5]
-        date = startDatetime[:4] + '-' + \
-               startDatetime[4:6] + '-' + \
-               startDatetime[6:8]
+        date = startDatetime[:10]
         startTime = row[8]
         endTime = row[9]
         # write appointments to pad
         pad.addstr(i, x, ID)
         pad.addstr(i, x + 12, studentName)
-        pad.addstr(i, x + 54, date)
-        pad.addstr(i, x + 66, startTime)
+        pad.addstr(i, x + 53, date)
+        pad.addstr(i, x + 65, startTime)
         pad.addstr(i, x + 73, endTime) 
         i += 1
 
@@ -152,18 +150,18 @@ def main():
         feedback = 'Appointment ID is too short'
         uid = ''
       else:
-        if not appointmentExists(uid):
+        if not appointmentExistsSQL(uid):
           feedback = 'That is not a valid appointment ID'
           uid = ''
         else:
-          # pull appointment from db
-          appointment = getAppointment(uid)
-          sendCancellation(appointment['studentName'],
-                           appointment['studentAddress'],
-                           appointment['advisorAddress'],
-                           appointment['dateWithDay'],
-                           appointment['startTime12H'],
-                           appointment['endTime12H'])
+          # pull appointment row from db
+          row = getAppointmentSQL(uid)
+          sendCancellation(row[1], # studentName
+                           row[2], # studentAddress
+                           row[4], # advisorAddress
+                           row[7], # date with day
+                           row[8], # start time 12H
+                           row[9]) # end time 12H
           # give feedback
           feedback = 'Cancellation email sent for appointment ' + uid
           uid = ''

@@ -131,7 +131,7 @@ def main():
   # create uid
   uid = startDatetime.strftime("%y%m%d%H%M")
   # check for invalid requests
-  if signup and appointmentExists(uid):
+  if signup and appointmentExistsSQL(uid):
     # appointment slot taken. Ignore email
     
     if DEBUG:
@@ -223,23 +223,23 @@ def main():
 
     # update the database
     if signup:
-      addAppointment(uid, 
-                     studentName, 
-                     studentAddress,
-                     advisorName,
-                     advisorAddress,
-                     str(startDatetime),
-                     str(endDatetime),
-                     dateWithDay,
-                     startTime12H,
-                     endTime12H)
+      addAppointmentSQL(uid, 
+                        studentName, 
+                        studentAddress,
+                        advisorName,
+                        advisorAddress,
+                        str(startDatetime),
+                        str(endDatetime),
+                        dateWithDay,
+                        startTime12H,
+                        endTime12H)
       if DEBUG:
         # write to log for debugging purposes
         with open("../AAAH/handler_log", 'a') as logfile:
           logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
           logfile.write(" : processed signup email " + uid)
     else:
-      removeAppointment(uid)
+      removeAppointmentSQL(uid)
 
     if DEBUG:
       # write to log for debugging purposes

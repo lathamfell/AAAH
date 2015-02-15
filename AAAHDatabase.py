@@ -22,8 +22,8 @@ def main():
                      "lathamfell@gmail.com",
                      "McGrath, D Kevin",
                      "felll@engr.orst.edu",
-                     "20150330T160000",
-                     "20150330T173000",
+                     "2015-01-30 15:00:00-08:00",
+                     "2015-01-30 15:30:00-08:00",
                      "Monday, January 30th, 2015",
                      "3:00pm",
                      "3:30pm")
@@ -35,8 +35,8 @@ def main():
                         "lathamfell@gmail.com",
                         "McGrath, D Kevin",
                         "felll@engr.orst.edu",
-                        "20150330T160000",
-                        "20150330T173000",
+                        "2015-01-30 15:00:00-08:00",
+                        "2015-01-30 15:30:00-08:00",
                         "Monday, January 30th, 2015",
                         "3:00pm",
                         "3:30pm")
@@ -126,10 +126,9 @@ def getAppointmentSQL(uid):
   if appointmentExistsSQL(uid):
     db = getConnection()
     with closing(db.cursor()) as cur:
-      sql = "SELECT COUNT(1) FROM APPOINTMENT \
-            WHERE UID = '%s'" % (uid)
+      sql = "SELECT COUNT(1) FROM APPOINTMENT WHERE UID = '%s'" % (uid)
       cur.execute(sql)
-      result = cur.fetchone()
+      result = cur.fetchall()
       db.close()
       return result
   else:
@@ -168,8 +167,7 @@ def appointmentExists(uid):
 def appointmentExistsSQL(uid):
   db = getConnection()
   with closing(db.cursor()) as cur:
-    sql = "SELECT COUNT(1) FROM APPOINTMENT \
-           WHERE UID = '%s'" % (uid)
+    sql = "SELECT COUNT(1) FROM APPOINTMENT WHERE UID = '%s'" % (uid)
     try:
       cur.execute(sql)
       if cur.fetchone()[0]:
