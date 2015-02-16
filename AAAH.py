@@ -1,14 +1,10 @@
 import curses
 import smtplib
-import random
 import re
 from AAAHEmail import sendCancellation
-from AAAHDatabase import appointmentCount, getAppointment, \
-                         getAllAppointments, appointmentExists
 from AAAHDatabase import appointmentCountSQL, getAppointmentSQL, \
                          getAllAppointmentsSQL, appointmentExistsSQL, \
                          createTable
-from operator import itemgetter
 
 def main():
   # string to hold appointment ID
@@ -50,35 +46,6 @@ def main():
                   'Start  ' \
                   'End     ', curses.A_UNDERLINE)
 
-    # """ This code block uses old JSON 'database' """
-    # # check how many appointments are in the database
-    # appmtCount = appointmentCount()
-    # # create pad
-    # pad = curses.newpad(appmtCount + 1, 80)
-    # # get the appointments and sort them
-    # appmtList = getAllAppointments()
-    # appmtList = sorted(appmtList, key=itemgetter('uid'))
-    # # write appointments to pad
-    # i = 0
-    # for i in xrange(len(appmtList)):
-    #   # initialize x position
-    #   x = 0
-    #   # set appointment variables
-    #   ID = appmtList[i]['uid']
-    #   studentName = appmtList[i]['studentName']
-    #   startDatetime = appmtList[i]['startDatetime']
-    #   date = startDatetime[:10]
-    #   startTime = startDatetime[11:16]
-    #   endDatetime = appmtList[i]['endDatetime']
-    #   endTime = endDatetime[11:16]
-    #   # write appointments to pad
-    #   pad.addstr(i, x, str(ID))
-    #   pad.addstr(i, x + 12, studentName)
-    #   pad.addstr(i, x + 56, date)
-    #   pad.addstr(i, x + 68, startTime)
-    #   pad.addstr(i, x + 75, endTime) 
-
-    """ This code block uses new MySQL database """
     # check how many appointments are in the database
     appmtCount = appointmentCountSQL()
     # create pad

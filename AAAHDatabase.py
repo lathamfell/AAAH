@@ -4,33 +4,17 @@ from contextlib import closing
 import json
 
 def main():
-  print "Enter a to add a JSON test appointment (set attributes in code first).\n" \
-        "Enter r to remove a JSON appointment (set uid in code first).\n" \
-        "Enter s to add a SQL appointment (set attr in code first).\n" \
+  print "Enter s to add a SQL appointment (set attr in code first).\n" \
         "Enter w to remove a SQL appointment (set uid in code first).\n" \
         "Enter e to see if SQL appointment exists (set uid in code first).\n" \
-        "Enter l to print the number of appointments in db.\n" \
+        "Enter l to print the number of appointments in database.\n" \
         "Enter i to create the SQL table.\n" \
         "Enter d to drop the SQL table.\n" \
-        "Enter c to clear all JSON appointments.\n" \
         "Enter q to exit."
   while True:
     command = raw_input()
-    if command == 'a' or command == 'A':
-      addAppointment("1401301506",
-                     "Brabham, Matrhew Lawrence",
-                     "lathamfell@gmail.com",
-                     "McGrath, D Kevin",
-                     "felll@engr.orst.edu",
-                     "2015-01-30 15:00:00-08:00",
-                     "2015-01-30 15:30:00-08:00",
-                     "Monday, January 30th, 2015",
-                     "3:00pm",
-                     "3:30pm")
-    elif command == 'r' or command == 'R':
-      removeAppointment("1001301500")
-    elif command == 's' or command == 'S':
-      addAppointmentSQL("1401301508",
+    if command == 's' or command == 'S':
+      addAppointmentSQL("1401301500",
                         "Brabham, Matrhew Lawrence",
                         "lathamfell@gmail.com",
                         "McGrath, D Kevin",
@@ -50,8 +34,6 @@ def main():
       createTable()
     elif command == 'd' or command == 'D':
       dropTable()
-    elif command == 'c' or command == 'C':
-      removeAllAppointments()
     else:
       break
 
@@ -89,14 +71,6 @@ def createTable():
   db.close()
   return True
 
-def appointmentCount():
-  try:
-    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
-    return len(appointmentsJSON)
-  except:
-    # if error in opening file, there are no appointments yet
-    return 0
-
 def appointmentCountSQL():
   db = getConnection()
   with closing(db.cursor()) as cur:
@@ -111,17 +85,6 @@ def appointmentCountSQL():
       db.close()
       return 0
 
-def getAppointment(uid):
-  if appointmentExists(uid):
-    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
-    for i in xrange(len(appointmentsJSON)):
-      if appointmentsJSON[i]["uid"] == uid:
-        return appointmentsJSON[i]
-        break
-  else:
-    # return empty JSON list
-    return json.loads(json.dumps([]))
-
 def getAppointmentSQL(uid):
   if appointmentExistsSQL(uid):
     db = getConnection()
@@ -134,14 +97,6 @@ def getAppointmentSQL(uid):
   else:
     return "Unexpected error while getting appointment " + uid
 
-def getAllAppointments():
-  if appointmentCount() > 0:
-    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
-    return appointmentsJSON
-  else:
-    # return empty JSON list
-    return json.loads(json.dumps([]))
-
 def getAllAppointmentsSQL():
   if appointmentCountSQL() > 0:
     db = getConnection()
@@ -153,16 +108,6 @@ def getAllAppointmentsSQL():
       return result  
   else:
     return "Unexpected error while getting all appointments"
-
-def appointmentExists(uid):
-  if appointmentCount() > 0:
-    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
-    for appointment in appointmentsJSON:
-      if appointment['uid'] == uid:
-        return True
-    return False
-  else:
-    return False
 
 def appointmentExistsSQL(uid):
   db = getConnection()
@@ -177,46 +122,6 @@ def appointmentExistsSQL(uid):
       # catch exception generated if table doesn't exist
       db.close()
   return False
-
-def addAppointment(uid, 
-                   studentName, 
-                   studentAddress,
-                   advisorName,
-                   advisorAddress,
-                   startDatetime,
-                   endDatetime,
-                   dateWithDay,
-                   startTime12H,
-                   endTime12H):
-  try:
-    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
-    # appointment list already exists
-    if not appointmentExists(uid):
-      appointmentsJSON.append({'uid': uid,
-                               'studentName': studentName,
-                               'studentAddress': studentAddress,
-                               'advisorName': advisorName,
-                               'advisorAddress': advisorAddress,
-                               'startDatetime': startDatetime,
-                               'endDatetime': endDatetime,
-                               'dateWithDay': dateWithDay,
-                               'startTime12H': startTime12H,
-                               'endTime12H': endTime12H })
-    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
-      json.dump(appointmentsJSON, appointmentsList)
-  except:
-    # appointment list doesn't exist yet
-    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
-      json.dump([{'uid': uid,
-                 'studentName': studentName,
-                 'studentAddress': studentAddress,
-                 'advisorName': advisorName,
-                 'advisorAddress': advisorAddress,
-                 'startDatetime': startDatetime,
-                 'endDatetime': endDatetime,
-                 'dateWithDay': dateWithDay,
-                 'startTime12H': startTime12H,
-                 'endTime12H': endTime12H }], appointmentsList)
 
 def addAppointmentSQL(uid, 
                       studentName, 
@@ -266,16 +171,6 @@ def addAppointmentSQL(uid,
   # disconnect
   db.close() 
 
-def removeAppointment(uid):
-  if appointmentExists(uid):
-    appointmentsJSON = json.load(open("../AAAH/appointmentsList"))
-    for i in xrange(len(appointmentsJSON)):
-      if appointmentsJSON[i]['uid'] == uid:
-        appointmentsJSON.pop(i)
-        break
-    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
-      json.dump(appointmentsJSON, appointmentsList)
-
 def removeAppointmentSQL(uid):
   # connect
   db = getConnection()
@@ -294,11 +189,6 @@ def removeAppointmentSQL(uid):
       db.rollback()
     # disconnect
     db.close() 
-
-def removeAllAppointments():
-  if appointmentCount() > 0:
-    with open("../AAAH/appointmentsList", 'w+') as appointmentsList:
-      json.dump([], appointmentsList)
 
 def dropTable():
   # connect

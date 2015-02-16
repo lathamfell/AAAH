@@ -11,7 +11,6 @@ import random
 import sys
 import socket
 import getpass
-from AAAHDatabase import appointmentExists, addAppointment, removeAppointment
 from AAAHDatabase import appointmentExistsSQL, addAppointmentSQL, \
                          removeAppointmentSQL
 
