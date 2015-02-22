@@ -42,31 +42,31 @@ def createTable():
 	db = getConnection()
 	# confirm there aren't any appointments yet
 	if appointmentCountSQL() < 1:
-	with closing(db.cursor()) as cur:
-		# disable warning issued when dropping table that doesn't exist
-		warnings.filterwarnings('ignore', 'Unknown table.*')
-		cur.execute("DROP TABLE IF EXISTS APPOINTMENT")
-		sql = """CREATE TABLE APPOINTMENT (
-			UID VARCHAR(255) PRIMARY KEY NOT NULL ,
-			STUDENT_NAME VARCHAR(255) NOT NULL,
-			STUDENT_ADDRESS VARCHAR(255) NOT NULL,
-			ADVISOR_NAME VARCHAR(255) NOT NULL,
-			ADVISOR_ADDRESS VARCHAR(255) NOT NULL,
-			START_DATETIME VARCHAR(255) NOT NULL,
-			END_DATETIME VARCHAR(255) NOT NULL,
-			DATE_WITH_DAY VARCHAR(255) NOT NULL,
-			START_TIME_12H VARCHAR(255) NOT NULL,
-			END_TIME_12H VARCHAR(255) NOT NULL )"""
-		try:
-			cur.execute(sql)
-			db.commit()
-			db.close()
-			return True
-		except:
-			# rollback in case there was an error
-			db.rollback()
-			db.close()
-			return False
+		with closing(db.cursor()) as cur:
+			# disable warning issued when dropping table that doesn't exist
+			warnings.filterwarnings('ignore', 'Unknown table.*')
+			cur.execute("DROP TABLE IF EXISTS APPOINTMENT")
+			sql = """CREATE TABLE APPOINTMENT (
+				UID VARCHAR(255) PRIMARY KEY NOT NULL ,
+				STUDENT_NAME VARCHAR(255) NOT NULL,
+				STUDENT_ADDRESS VARCHAR(255) NOT NULL,
+				ADVISOR_NAME VARCHAR(255) NOT NULL,
+				ADVISOR_ADDRESS VARCHAR(255) NOT NULL,
+				START_DATETIME VARCHAR(255) NOT NULL,
+				END_DATETIME VARCHAR(255) NOT NULL,
+				DATE_WITH_DAY VARCHAR(255) NOT NULL,
+				START_TIME_12H VARCHAR(255) NOT NULL,
+				END_TIME_12H VARCHAR(255) NOT NULL )"""
+			try:
+				cur.execute(sql)
+				db.commit()
+				db.close()
+				return True
+			except:
+				# rollback in case there was an error
+				db.rollback()
+				db.close()
+				return False
 	# disconnect
 	db.close()
 	return True
@@ -106,8 +106,8 @@ def getAllAppointmentsSQL():
 			result = cur.fetchall()
 			db.close()
 			return result  
-		else:
-			return "Unexpected error while getting all appointments"
+	else:
+		return "Unexpected error while getting all appointments"
 
 def appointmentExistsSQL(uid):
 	db = getConnection()
@@ -137,37 +137,37 @@ def addAppointmentSQL(uid,
 	db = getConnection()
 	# make sure table exists
 	if createTable():
-	with closing(db.cursor()) as cur:
-		# add the appointment
-		sql = "INSERT INTO APPOINTMENT( \
-			UID, \
-			STUDENT_NAME, \
-			STUDENT_ADDRESS, \
-			ADVISOR_NAME, \
-			ADVISOR_ADDRESS, \
-			START_DATETIME, \
-			END_DATETIME, \
-			DATE_WITH_DAY, \
-			START_TIME_12H, \
-			END_TIME_12H ) \
-			VALUES ('%s', '%s', '%s', '%s', '%s', \
-			'%s', '%s', '%s', '%s', '%s' )" % \
-			(uid,
-				studentName,
-				studentAddress,
-				advisorName,
-				advisorAddress,
-				startDatetime,
-				endDatetime,
-				dateWithDay,
-				startTime12H,
-				endTime12H )
-		try:
-			cur.execute(sql)
-			db.commit()
-		except:
-			# rollback in case there was an error
-			db.rollback()
+		with closing(db.cursor()) as cur:
+			# add the appointment
+			sql = "INSERT INTO APPOINTMENT( \
+				UID, \
+				STUDENT_NAME, \
+				STUDENT_ADDRESS, \
+				ADVISOR_NAME, \
+				ADVISOR_ADDRESS, \
+				START_DATETIME, \
+				END_DATETIME, \
+				DATE_WITH_DAY, \
+				START_TIME_12H, \
+				END_TIME_12H ) \
+				VALUES ('%s', '%s', '%s', '%s', '%s', \
+				'%s', '%s', '%s', '%s', '%s' )" % \
+				(uid,
+					studentName,
+					studentAddress,
+					advisorName,
+					advisorAddress,
+					startDatetime,
+					endDatetime,
+					dateWithDay,
+					startTime12H,
+					endTime12H )
+			try:
+				cur.execute(sql)
+				db.commit()
+			except:
+				# rollback in case there was an error
+				db.rollback()
 	# disconnect
 	db.close() 
 
@@ -184,8 +184,8 @@ def removeAppointmentSQL(uid):
 					logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
 					logfile.write(" : deleted " + uid + " from db") 
 		except:
-		# rollback in case there was an error
-		db.rollback()
+			# rollback in case there was an error
+			db.rollback()
 	# disconnect
 	db.close() 
 
