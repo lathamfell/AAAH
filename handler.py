@@ -238,7 +238,8 @@ def main():
       # write to log for debugging purposes
       with open("../AAAH/handler_log", 'a') as logfile:
         logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-        logfile.write(" : processed cancel email " + uid
+        logfile.write(" : processed cancel email " + uid)
 
 if __name__ == '__main__':
   main()
+  
