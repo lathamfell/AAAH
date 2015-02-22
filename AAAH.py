@@ -1,6 +1,7 @@
 import curses
 import smtplib
 import re
+from time import sleep
 from AAAHEmail import sendCancellation
 from AAAHDatabase import appointmentCountSQL, getAppointmentSQL, \
 getAllAppointmentsSQL, appointmentExistsSQL, \
@@ -14,7 +15,7 @@ def main():
 	# first row of appointments to be displayed on pad
 	pad_row = 0
 	# how many rows of the pad can be seen at a time
-	visibleRows = 7
+	visibleRows = 12
 	# holds scrolling commands
 	padCmd = ''
 	# initialize application screen
@@ -75,16 +76,16 @@ def main():
 				i += 1
 
 		# display the pad
-		pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, 79)
+		pad.refresh(pad_row, 0, 2, 0, 3 + visibleRows, 79)
 		# pad lower border
-		screen.hline(3 + visibleRows + 1, 0, '_', 80)
+		screen.hline(visibleRows + 4, 0, '_', 80)
 		# user menu
-		screen.addstr(12, 0, 'Use the arrow keys to scroll through appointments.\n')
+		screen.addstr(visibleRows+5, 0, 'Use the arrow keys to scroll through appointments.\n')
 		screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
 		screen.addstr('To refresh the schedule, press r.\n')
 		screen.addstr('To quit, press q.\n')
 		screen.addstr('\n' + feedback + '\n')
-		screen.addstr('\nAppointment ID: ')
+		screen.addstr('Appointment ID: ')
 		screen.addstr(user_input)
 		screen.refresh()
 		# get user input
@@ -136,8 +137,10 @@ def main():
 						row[7], # date with day
 						row[8], # start time 12H
 						row[9]) # end time 12H
-					feedback = 'Cancellation email sent for appointment ' + user_input + '[' + uid + ']'
+					feedback = 'Cancellation email sent for appointment ' + user_input + ' [' + row[1] + ']'
 					user_input = ''
+					# sleep for .5? seconds allows handler time to remove the appt.
+					sleep(0.5)
 			# if digit, add it to appointment ID string
 		try:
 			if re.match('\d', chr(command)):

@@ -25,9 +25,9 @@ def main():
 				"3:00pm",
 				"3:30pm")
 		elif command == 'w' or command == 'W':
-			removeAppointmentSQL("1401301506")
+			removeAppointmentSQL("1401301500")
 		elif command == 'e' or command == 'E':
-			print appointmentExistsSQL("1401301506")
+			print appointmentExistsSQL("1401301500")
 		elif command == 'l' or command == 'L':
 			print appointmentCountSQL()
 		elif command == 'i' or command == 'I':
