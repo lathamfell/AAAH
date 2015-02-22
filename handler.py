@@ -239,3 +239,6 @@ def main():
       with open("../AAAH/handler_log", 'a') as logfile:
         logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
         logfile.write(" : processed cancel email " + uid
+
+if __name__ == '__main__':
+  main()
