@@ -77,7 +77,7 @@ def main():
 		# display the pad
 		pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, 79)
 		# pad lower border
-		screen.hline(3 + visibleRows + 1, 0, curses.A_UNDERLINE, 80)
+		screen.hline(3 + visibleRows + 1, 0, '_', 80)
 		# user menu
 		screen.addstr(12, 0, 'Use the arrow keys to scroll through appointments.\n')
 		screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
