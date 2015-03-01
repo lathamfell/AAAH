@@ -38,7 +38,7 @@ def main():
 		screen.clear()
 		screen.refresh()
 		screen.addstr('                 ' \
-			'Automated Advising Appointment Handler [Group 2]\n',
+			'Automated Advising Appointment Handler [Group 2]\n\n',
 			curses.A_BOLD)
 		screen.addstr('ID          ' \
 			'Student                                  ' \
@@ -81,8 +81,8 @@ def main():
 		screen.hline(visibleRows + 4, 0, '_', 80)
 		# user menu
 		screen.addstr(visibleRows+5, 0, 'Use the arrow keys to scroll through appointments.\n')
-		screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
-		screen.addstr('To refresh the schedule, press r.\n')
+		screen.addstr('To cancel an appointment, type the ID and press Enter. The list will refresh automatically.\n')
+		screen.addstr('To refresh the schedule manually, press r.\n')
 		screen.addstr('To quit, press q.\n')
 		screen.addstr('\n' + feedback + '\n')
 		screen.addstr('Appointment ID: ')
