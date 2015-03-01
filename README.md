@@ -22,9 +22,20 @@ Created for Oregon State University Advising Appointments
 
     `ln -s ~/AAAH/.procmailrc ~/.procmailrc`
 
-## Usage:
+## Usage - Command Line Interface:
 
 1. In the `~/AAAH` directory, enter the command:
 
     `python AAAH.py`
 
+2. A list of scheduled appointments will be displayed. 14 appointments will be visible at once.
+
+3. To scroll through the list of appointments, use the arrow keys.
+
+4. To delete an appointment, type the appoinment ID, followed by the Enter key.
+
+5. To refresh the list of appointments, type 'r'.
+
+6. To quit the AAAH tool, type 'q'. 
+
+3. 
