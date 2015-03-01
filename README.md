@@ -28,14 +28,12 @@ Created for Oregon State University Advising Appointments
 
     `python AAAH.py`
 
-2. A list of scheduled appointments will be displayed. 14 appointments will be visible at once.
+2. A list of scheduled appointments will be displayed. Groups of 14 appointments will be visible at once. Use the arrow keys to scroll through the full list.
 
-3. To scroll through the list of appointments, use the arrow keys.
+3. To cancel an appointment, type the appoinment ID, followed by the Enter key. This will send a cancellation email to the student and send an iCal to you to remove the appointment from your calendar.
 
-4. To delete an appointment, type the appoinment ID, followed by the Enter key.
+4. To refresh the list of appointments, type 'r'. This will remove the cancelled appointments from your display.
 
-5. To refresh the list of appointments, type 'r'.
-
-6. To quit the AAAH tool, type 'q'. 
+5. To quit the AAAH tool, type 'q'. You will be returned to the `~/AAAH` directory.
 
 3. 
