@@ -7,7 +7,7 @@ import socket
 from time import sleep
 
 ## CHANGE THESE VALUES TO TEST
-studentAddress = "lathamfell@gmail.com"
+studentAddress = "kenneme@gmail.com"
 advisorAddress = getpass.getuser() + "@" + socket.getfqdn()
 advisorName = "YOUR, NAME"
 ## CHANGE THESE VALUES TO TEST
