@@ -42,7 +42,7 @@ def main():
 	while True:
 		# how many rows of the pad can be seen at a time
 		window_y, window_x = screen.getmaxyx()
-		visibleRows = window_y - 13
+		visibleRows = window_y - 12
 		# reset padCmd
 		padCmd = ''
 		screen.clear()
@@ -50,8 +50,8 @@ def main():
 		if (screen.addstr(0, (window_x-len(title_string))/2, title_string, curses.A_BOLD)):
 			sys.exit()
 		screen.addstr(1, 0, 'ID', curses.A_UNDERLINE)
-		screen.addstr(1, window_x/20, 'Student', curses.A_UNDERLINE)
-		screen.addstr(1, window_x*6/10, 'Date', curses.A_UNDERLINE)
+		screen.addstr(1, 4, 'Student', curses.A_UNDERLINE)
+		screen.addstr(1, window_x-27, 'Date', curses.A_UNDERLINE)
 		screen.addstr(1, window_x-15, 'Start', curses.A_UNDERLINE)
 		screen.addstr(1, window_x-7, 'End', curses.A_UNDERLINE)
 
@@ -72,8 +72,8 @@ def main():
 				endTime = row[9]
 				# write appointments to pad
 				pad.addstr(i, 0, str(UIID))
-				pad.addstr(i, window_x/20, studentName)
-				pad.addstr(i, window_x*6/10, date)
+				pad.addstr(i, 4, studentName)
+				pad.addstr(i, window_x - 27, date)
 				pad.addstr(i, window_x - 15, startTime)
 				pad.addstr(i, window_x - 7, endTime) 
 				i += 1
@@ -81,9 +81,9 @@ def main():
 		# display the pad
 		pad.refresh(pad_row, 0, 2, 0, 3 + visibleRows, window_x)
 		# pad lower border
-		screen.hline(visibleRows + 4, 0, '_', window_x)
+		screen.hline(window_y-8, 0, '_', window_x)
 		# user menu
-		screen.addstr(visibleRows+5, 0, 'Use the arrow keys to scroll through appointments.\n')
+		screen.addstr(window_y-7, 0, 'Use the arrow keys to scroll through appointments.\n')
 		screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
 		screen.addstr('To refresh the schedule manually, press r.\n')
 		screen.addstr('To quit, press q.\n')
@@ -106,6 +106,9 @@ def main():
 			break
 		# refresh appointments
 		elif command == ord('r') or command == ord('R'):
+			appmtCount = appointmentCountSQL()
+			appmtList = getAllAppointmentsSQL()
+			appmtList = sorted(appmtList, key=lambda x: x[5])
 			feedback = 'Schedule refreshed'
 			pad_row = 0
 		# if backspace, delete a char from appointment ID string
@@ -142,8 +145,11 @@ def main():
 						row[9]) # end time 12H
 					feedback = 'Cancellation email sent for appointment ' + user_input + ' [' + row[1] + ']'
 					user_input = ''
-					# sleep for .5? seconds allows handler time to remove the appt.
-					sleep(0.5)
+					# sleep for 1 second seconds allows handler time to remove the appt.
+					sleep(1)
+					appmtCount = appointmentCountSQL()
+					appmtList = getAllAppointmentsSQL()
+					appmtList = sorted(appmtList, key=lambda x: x[5])
 			# if digit, add it to appointment ID string
 		try:
 			if re.match('\d', chr(command)):
