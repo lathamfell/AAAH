@@ -88,6 +88,20 @@ def appointmentCountSQL():
 			db.close()
 			return 0
 
+def databaseCount():
+	db = getConnection()
+	with closing(db.cursor()) as cur:
+		sql = "SELECT * FROM APPOINTMENT"
+		try:
+			cur.execute(sql)
+			count = cur.rowcount
+			db.close()
+			return count
+		except:
+			# if table doesn't exist yet, there are 0 appointments
+			db.close()
+			return 0
+
 def getAppointmentSQL(uid):
 	if appointmentExistsSQL(uid):
 		db = getConnection()

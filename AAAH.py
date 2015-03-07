@@ -6,7 +6,7 @@ from time import sleep
 from AAAHEmail import sendCancellation
 from AAAHDatabase import appointmentCountSQL, getAppointmentSQL, \
 getAllAppointmentsSQL, appointmentExistsSQL, \
-createTable
+createTable, databaseCount
 
 def main():
 	# string to hold appointment ID
@@ -32,7 +32,7 @@ def main():
 	# check how many appointments are in the database
 	appmtCount = appointmentCountSQL()
 	# create database table if it doesn't exist yet
-	if appmtCount < 1:
+	if databaseCount() < 1:
 		createTable()
 
 	# pull all appointments from db and sort them
@@ -53,6 +53,7 @@ def main():
 		screen.refresh()
 		if (window_x > 50):
 			screen.addstr(0, (window_x-len(title_string))/2, title_string, curses.A_BOLD)
+		# screen.addstr(1,0, 'Appointments for <' + getpass.getuser() +'>')
 		screen.addstr(1, 0, 'ID', curses.A_UNDERLINE)
 		screen.addstr(1, 4, 'Student', curses.A_UNDERLINE)
 		screen.addstr(1, window_x-27, 'Date', curses.A_UNDERLINE)
