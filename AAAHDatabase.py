@@ -2,6 +2,8 @@ import MySQLdb
 import warnings
 from contextlib import closing
 import json
+import getpass
+import socket
 
 def main():
 	print "Enter s to add a SQL appointment (set attr in code first).\n" \
@@ -16,9 +18,9 @@ def main():
 		if command == 's' or command == 'S':
 			addAppointmentSQL("1401301500",
 				"Brabham, Matrhew Lawrence",
-				"lathamfell@gmail.com",
+				"donotreply@gmail.com",
 				"McGrath, D Kevin",
-				"felll@engr.orst.edu",
+				getpass.getuser() + "@" + socket.getfqdn(),
 				"2015-01-30 15:00:00-08:00",
 				"2015-01-30 15:30:00-08:00",
 				"Monday, January 30th, 2015",
@@ -56,7 +58,8 @@ def createTable():
 				END_DATETIME VARCHAR(255) NOT NULL,
 				DATE_WITH_DAY VARCHAR(255) NOT NULL,
 				START_TIME_12H VARCHAR(255) NOT NULL,
-				END_TIME_12H VARCHAR(255) NOT NULL )"""
+				END_TIME_12H VARCHAR(255) NOT NULL,
+				ONID VARCHAR(255) NOT NULL )"""
 			try:
 				cur.execute(sql)
 				db.commit()
@@ -74,7 +77,7 @@ def createTable():
 def appointmentCountSQL():
 	db = getConnection()
 	with closing(db.cursor()) as cur:
-		sql = "SELECT * FROM APPOINTMENT"
+		sql = "SELECT * FROM APPOINTMENT WHERE ONID = '%s'" % getpass.getuser()
 		try:
 			cur.execute(sql)
 			count = cur.rowcount
@@ -101,7 +104,7 @@ def getAllAppointmentsSQL():
 	if appointmentCountSQL() > 0:
 		db = getConnection()
 		with closing(db.cursor()) as cur:
-			sql = "SELECT * FROM APPOINTMENT"
+			sql = "SELECT * FROM APPOINTMENT WHERE ONID = '%s'" % getpass.getuser()
 			cur.execute(sql)
 			result = cur.fetchall()
 			db.close()
@@ -149,9 +152,10 @@ def addAppointmentSQL(uid,
 				END_DATETIME, \
 				DATE_WITH_DAY, \
 				START_TIME_12H, \
-				END_TIME_12H ) \
+				END_TIME_12H, \
+				ONID ) \
 				VALUES ('%s', '%s', '%s', '%s', '%s', \
-				'%s', '%s', '%s', '%s', '%s' )" % \
+				'%s', '%s', '%s', '%s', '%s', '%s')" % \
 				(uid,
 					studentName,
 					studentAddress,
@@ -161,7 +165,8 @@ def addAppointmentSQL(uid,
 					endDatetime,
 					dateWithDay,
 					startTime12H,
-					endTime12H )
+					endTime12H,
+					getpass.getuser() )
 			try:
 				cur.execute(sql)
 				db.commit()

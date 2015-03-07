@@ -4,6 +4,7 @@ import datetime
 import random
 import getpass
 import socket
+from time import sleep
 
 ## CHANGE THESE VALUES TO TEST
 studentAddress = "lathamfell@gmail.com"
@@ -101,6 +102,7 @@ def sendSignup(iterations):
     # send the email
     s = smtplib.SMTP('mail.oregonstate.edu')
     s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
+    sleep(.1)
 
 def sendCancellation(studentName, studentAddress, advisorAddress, dateWithDay, startTime12H, endTime12H):
   # set email values
