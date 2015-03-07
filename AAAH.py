@@ -37,7 +37,8 @@ def main():
 
 	# pull all appointments from db and sort them
 	appmtList = getAllAppointmentsSQL()
-	appmtList = sorted(appmtList, key=lambda x: x[5])
+	if appmtCount > 1:
+		appmtList = sorted(appmtList, key=lambda x: x[5])
 
 	# user input loop
 	while True:
@@ -112,7 +113,8 @@ def main():
 		elif command == ord('r') or command == ord('R'):
 			appmtCount = appointmentCountSQL()
 			appmtList = getAllAppointmentsSQL()
-			appmtList = sorted(appmtList, key=lambda x: x[5])
+			if appmtCount > 1:
+				appmtList = sorted(appmtList, key=lambda x: x[5])
 			feedback = 'Schedule refreshed'
 			pad_row = 0
 		# if backspace, delete a char from appointment ID string
@@ -153,7 +155,8 @@ def main():
 					sleep(1)
 					appmtCount = appointmentCountSQL()
 					appmtList = getAllAppointmentsSQL()
-					appmtList = sorted(appmtList, key=lambda x: x[5])
+					if appmtCount > 1:
+						appmtList = sorted(appmtList, key=lambda x: x[5])
 			# if digit, add it to appointment ID string
 		try:
 			if re.match('\d', chr(command)):
