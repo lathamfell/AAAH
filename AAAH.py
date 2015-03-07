@@ -1,6 +1,7 @@
 import curses
 import smtplib
 import re
+import sys
 from time import sleep
 from AAAHEmail import sendCancellation
 from AAAHDatabase import appointmentCountSQL, getAppointmentSQL, \
@@ -42,13 +43,15 @@ def main():
 	while True:
 		# how many rows of the pad can be seen at a time
 		window_y, window_x = screen.getmaxyx()
+		if (window_x < 55 or window_y < 11):
+			sys.exit("\nYour window size is too small\n")
 		visibleRows = window_y - 12
 		# reset padCmd
 		padCmd = ''
 		screen.clear()
 		screen.refresh()
-		if (screen.addstr(0, (window_x-len(title_string))/2, title_string, curses.A_BOLD)):
-			sys.exit()
+		if (window_x > 50):
+			screen.addstr(0, (window_x-len(title_string))/2, title_string, curses.A_BOLD)
 		screen.addstr(1, 0, 'ID', curses.A_UNDERLINE)
 		screen.addstr(1, 4, 'Student', curses.A_UNDERLINE)
 		screen.addstr(1, window_x-27, 'Date', curses.A_UNDERLINE)
@@ -83,9 +86,10 @@ def main():
 		# pad lower border
 		screen.hline(window_y-8, 0, '_', window_x)
 		# user menu
-		screen.addstr(window_y-7, 0, 'Use the arrow keys to scroll through appointments.\n')
-		screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
-		screen.addstr('To refresh the schedule manually, press r.\n')
+		if (window_x > 51 & window_y > 12):
+			screen.addstr(window_y-7, 0, 'Use the arrow keys to scroll through appointments.\n')
+			screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
+			screen.addstr('To refresh the schedule manually, press r.\n')
 		screen.addstr('To quit, press q.\n')
 		screen.addstr(feedback + '\n')
 		screen.addstr('Appointment ID: ')
