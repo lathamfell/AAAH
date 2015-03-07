@@ -14,8 +14,7 @@ def main():
 	feedback = ''
 	# first row of appointments to be displayed on pad
 	pad_row = 0
-	# how many rows of the pad can be seen at a time
-	visibleRows = 12
+	title_string = 'Automated Advising Appointment Handler [Group 2]\n'
 	# holds scrolling commands
 	padCmd = ''
 	# initialize application screen
@@ -28,37 +27,41 @@ def main():
 	curses.echo()
 	# enable window scrolling
 	# screen.scrollok(1)
+
+	# check how many appointments are in the database
+	appmtCount = appointmentCountSQL()
 	# create database table if it doesn't exist yet
-	if appointmentCountSQL < 1:
+	if appmtCount < 1:
 		createTable()
+
+	# pull all appointments from db and sort them
+	appmtList = getAllAppointmentsSQL()
+	appmtList = sorted(appmtList, key=lambda x: x[5])
+
 	# user input loop
 	while True:
+		# how many rows of the pad can be seen at a time
+		window_y, window_x = screen.getmaxyx()
+		visibleRows = window_y - 13
 		# reset padCmd
 		padCmd = ''
 		screen.clear()
 		screen.refresh()
-		screen.addstr('                 ' \
-			'Automated Advising Appointment Handler [Group 2]\n\n',
-			curses.A_BOLD)
-		screen.addstr('ID          ' \
-			'Student                                  ' \
-			'Date        ' \
-			'Start   ' \
-			'End   ', curses.A_UNDERLINE)
+		if (screen.addstr(0, (window_x-len(title_string))/2, title_string, curses.A_BOLD)):
+			sys.exit()
+		screen.addstr(1, 0, 'ID', curses.A_UNDERLINE)
+		screen.addstr(1, window_x/20, 'Student', curses.A_UNDERLINE)
+		screen.addstr(1, window_x*6/10, 'Date', curses.A_UNDERLINE)
+		screen.addstr(1, window_x-15, 'Start', curses.A_UNDERLINE)
+		screen.addstr(1, window_x-7, 'End', curses.A_UNDERLINE)
 
-		# check how many appointments are in the database
-		appmtCount = appointmentCountSQL()
 		# create pad
-		pad = curses.newpad(appmtCount + 1, 80)
-		# pull all appointments from db and sort them
-		appmtList = 0
+		pad = curses.newpad(appmtCount + 1, window_x)
+		
 		if appmtCount > 0:
-			appmtList = getAllAppointmentsSQL()
 			# write appointments to pad
 			i = 0
 			for row in appmtList:
-				# initialize x position
-				x = 0
 				# set appointment variables
 				ID = row[0]
 				UIID = i
@@ -68,23 +71,23 @@ def main():
 				startTime = row[8]
 				endTime = row[9]
 				# write appointments to pad
-				pad.addstr(i, x, str(UIID))
-				pad.addstr(i, x + 12, studentName)
-				pad.addstr(i, x + 53, date)
-				pad.addstr(i, x + 65, startTime)
-				pad.addstr(i, x + 73, endTime) 
+				pad.addstr(i, 0, str(UIID))
+				pad.addstr(i, window_x/20, studentName)
+				pad.addstr(i, window_x*6/10, date)
+				pad.addstr(i, window_x - 15, startTime)
+				pad.addstr(i, window_x - 7, endTime) 
 				i += 1
 
 		# display the pad
-		pad.refresh(pad_row, 0, 2, 0, 3 + visibleRows, 79)
+		pad.refresh(pad_row, 0, 2, 0, 3 + visibleRows, window_x)
 		# pad lower border
-		screen.hline(visibleRows + 4, 0, '_', 80)
+		screen.hline(visibleRows + 4, 0, '_', window_x)
 		# user menu
 		screen.addstr(visibleRows+5, 0, 'Use the arrow keys to scroll through appointments.\n')
 		screen.addstr('To cancel an appointment, type the ID and press Enter.\n')
 		screen.addstr('To refresh the schedule manually, press r.\n')
 		screen.addstr('To quit, press q.\n')
-		screen.addstr('\n' + feedback + '\n')
+		screen.addstr(feedback + '\n')
 		screen.addstr('Appointment ID: ')
 		screen.addstr(user_input)
 		screen.refresh()
@@ -94,10 +97,10 @@ def main():
 		# if up or down arrow, scroll pad
 		if command == curses.KEY_DOWN and pad_row <= appmtCount - visibleRows - 2:
 			pad_row += 1
-			pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, 79)
+			pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, window_x)
 		elif command == curses.KEY_UP and pad_row > 0:
 			pad_row -= 1
-			pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, 79)
+			pad.refresh(pad_row, 0, 3, 0, 3 + visibleRows, window_x)
 		# quit command
 		elif command == ord('q') or command == ord('Q'):
 			break
