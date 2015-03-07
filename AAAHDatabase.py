@@ -10,8 +10,8 @@ def main():
 	"Enter w to remove a SQL appointment (set uid in code first).\n" \
 	"Enter e to see if SQL appointment exists (set uid in code first).\n" \
 	"Enter l to print the number of appointments in database.\n" \
-	"Enter i to create the SQL table.\n" \
-	"Enter d to drop the SQL table.\n" \
+	# "Enter i to create the SQL table.\n" \
+	# "Enter d to drop the SQL table.\n" \
 	"Enter q to exit."
 	while True:
 		command = raw_input()
@@ -32,10 +32,10 @@ def main():
 			print appointmentExistsSQL("1401301500")
 		elif command == 'l' or command == 'L':
 			print appointmentCountSQL()
-		elif command == 'i' or command == 'I':
-			createTable()
-		elif command == 'd' or command == 'D':
-			dropTable()
+		# elif command == 'i' or command == 'I':
+		# 	createTable()
+		# elif command == 'd' or command == 'D':
+		# 	dropTable()
 		else:
 			break
 
@@ -43,7 +43,7 @@ def createTable():
 	# connect
 	db = getConnection()
 	# confirm there aren't any appointments yet
-	if appointmentCountSQL() < 1:
+	if databaseCount() < 1:
 		with closing(db.cursor()) as cur:
 			# disable warning issued when dropping table that doesn't exist
 			warnings.filterwarnings('ignore', 'Unknown table.*')
