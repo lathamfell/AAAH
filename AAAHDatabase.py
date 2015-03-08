@@ -10,9 +10,10 @@ def main():
 	"Enter w to remove a SQL appointment (set uid in code first).\n" \
 	"Enter e to see if SQL appointment exists (set uid in code first).\n" \
 	"Enter l to print the number of appointments in database.\n" \
+	"Enter q to exit."
 	# "Enter i to create the SQL table.\n" \
 	# "Enter d to drop the SQL table.\n" \
-	"Enter q to exit."
+	
 	while True:
 		command = raw_input()
 		if command == 's' or command == 'S':
