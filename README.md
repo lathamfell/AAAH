@@ -21,6 +21,8 @@ Created for Oregon State University Advising Appointments
 3. Navigate to your home directory and create a symlink with the following command:
 
     `ln -s ~/AAAH/.procmailrc ~/.procmailrc`
+    
+NOTE: If you forward your ENGR mail, you will need to disable email forwarding. Email forwarding overrides the procmail filter.
 
 ## Usage - Command Line Interface:
 
@@ -35,5 +37,3 @@ Created for Oregon State University Advising Appointments
 4. To refresh the list of appointments, type 'r'. This will remove the cancelled appointments from your display.
 
 5. To quit the AAAH tool, type 'q'. You will be returned to the `~/AAAH` directory.
-
-3. 
