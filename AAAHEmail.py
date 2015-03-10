@@ -9,7 +9,7 @@ from time import sleep
 ## CHANGE THESE VALUES TO TEST
 studentAddress = "donotreply@gmail.com"
 advisorAddress = getpass.getuser() + "@" + socket.getfqdn()
-advisorName = "YOUR, NAME"
+advisorName = "!THIS IS A TEST!!!"
 ## CHANGE THESE VALUES TO TEST
 
 def main():
@@ -102,13 +102,14 @@ def sendSignup(iterations):
     # send the email
     s = smtplib.SMTP('mail.oregonstate.edu')
     s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
-    sleep(.1)
+    sleep(.5)
+    print 'Appointment for', studentName, 'sent.'
 
 def sendCancellation(studentName, studentAddress, advisorAddress, dateWithDay, startTime12H, endTime12H):
   # set email values
   fromAddress = "do.not.reply@engr.orst.edu"
   subject = "Advising Signup Cancellation"
-  body = 'Advising Signup with ' + studentName + ' CANCELLED\n' \
+  body = 'Advising Signup with ' + advisorName + ' CANCELLED\n' \
     'Name: ' + studentName + '\n' \
     'Email: ' + studentAddress + '\n' \
     'Date: ' + dateWithDay + '\n' \
