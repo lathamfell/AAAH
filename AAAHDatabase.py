@@ -21,7 +21,8 @@ def main():
 				"Brabham, Matrhew Lawrence",
 				"donotreply@gmail.com",
 				"McGrath, D Kevin",
-				getpass.getuser() + "@" + socket.getfqdn(),
+				# socket.getfqdn() possibly causing ical issues due to email address mismatch
+				getpass.getuser() + "@engr.oregonstate.edu",
 				"2015-01-30 15:00:00-08:00",
 				"2015-01-30 15:30:00-08:00",
 				"Monday, January 30th, 2015",
