@@ -19,9 +19,9 @@ def main():
     after = appointmentCountSQL()
     if before == after - 1:
         print "SUCCESS! Appointment has been successfully \
-            added to your database."
+added to your database."
         print "Run command 'python AAAH.py' to view your \
-            database and remove the test."
+database and remove the test."
     else:
         print "FAILURE. Appointment was not added properly."
         print "Did you disable email forwarding?"
