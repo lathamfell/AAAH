@@ -260,5 +260,6 @@ def main():
                 logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
                 logfile.write(" : processed cancel email " + uid)
 
+
 if __name__ == '__main__':
     main()

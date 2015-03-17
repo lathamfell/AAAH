@@ -1,3 +1,5 @@
+"""This module presents the AAAH CLI."""
+
 import curses
 import smtplib
 import re
@@ -180,6 +182,7 @@ def main():
     screen.keypad(0)
     curses.echo()
     curses.endwin()
+
 
 if __name__ == '__main__':
     main()
