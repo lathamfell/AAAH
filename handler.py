@@ -15,6 +15,7 @@ import datetime
 import icalendar
 import pytz
 import random
+import re
 import sys
 import socket
 import getpass
@@ -41,16 +42,6 @@ def main():
     # turn string into message object
     msg = email.message_from_string(msg_string)
 
-    # send icalendar invite
-    # socket.getfqdn() issue -- removed
-    user_string = getpass.getuser() + "@engr.orst.edu"
-
-    # For some reason, if multiple emails are entered here, only the first
-    # email will receive the icalendar invite. So just use one email here
-    # message_recipiant = ["lathamfell@gmail.com"]
-    # invite should be sent to the same ENGR account
-    message_recipiant = [user_string]
-
     # categorize message as signup or cancellation
     if msg['subject'] == "Advising Signup Cancellation":
         signup = False
@@ -60,21 +51,18 @@ def main():
     # parse email body for data
     for line in msg.get_payload().split('\n'):
 
-        # set advisor name and address
+        # get advisor full name
         if line.startswith('Advising Signup with '):
             advisorName = line[21:].strip()
             advisorName = advisorName[:-10]
 
-        # pull student full name. Example: "Brabham, Matthew Lawrence"
+        # get student full name
         if line.startswith('Name:'):
             studentName = line[5:].strip()
 
         # pull student email address
         if line.startswith('Email:'):
             studentAddress = line[6:].strip()
-
-        # set advisor email address to this user's email
-        advisorAddress = user_string
 
         # pull appointment date
         if line.startswith('Date:'):
@@ -129,6 +117,11 @@ def main():
             if endCycle == 'pm':
                 endHour += 12
 
+    # get advisor address
+    for e in re.split(';|,|; |, |\s', msg['to']):
+        if e != studentAddress:
+            advisorAddress = e
+
     # save appointment start and end time
     startDatetime = datetime.datetime(
         year, month, day, startHour, startMinute, 0, 0, tz)
@@ -175,9 +168,8 @@ def main():
 
         # build the event
         event = icalendar.Event()
-        for attendee in message_recipiant:
-            event.add('attendee', attendee)
-        event.add('organizer', user_string)
+        event.add('attendee', advisorAddress)
+        event.add('organizer', advisorAddress)
         event.add('category', "Event")
         event.add('summary', subject)
         event.add('description', body)
@@ -200,7 +192,7 @@ def main():
         msg = email.MIMEMultipart.MIMEMultipart('alternative')
         msg["Subject"] = subject
         msg["From"] = "do.not.reply@engr.orst.edu"
-        msg["To"] = user_string
+        msg["To"] = advisorAddress
         msg["Date"] = email.utils.formatdate(localtime=True)
         msg["Content-class"] = "urn:content-classes:calendarmessage"
         msg.attach(email.MIMEText.MIMEText(body))
@@ -229,7 +221,7 @@ def main():
         # attach the invite to the outgoing email
         msg.attach(part)
 
-        # send the email
+        # send the iCalender event email
         s = smtplib.SMTP("mail.oregonstate.edu")
         s.sendmail(msg['From'], [msg['To']], msg.as_string())
         s.quit()
