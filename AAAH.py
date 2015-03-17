@@ -2,6 +2,7 @@ import curses
 import smtplib
 import re
 import sys
+import getpass
 from time import sleep
 from AAAHEmail import sendCancellation
 from AAAHDatabase import appointmentCountSQL, getAppointmentSQL, \
@@ -15,7 +16,7 @@ def main():
 	feedback = ''
 	# first row of appointments to be displayed on pad
 	pad_row = 0
-	title_string = 'Automated Advising Appointment Handler [Group 2]\n'
+	title_string = getpass.getuser() + "'s Appointment Handler [Group 2]\n"
 	# holds scrolling commands
 	padCmd = ''
 	# initialize application screen

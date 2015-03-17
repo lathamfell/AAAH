@@ -22,7 +22,7 @@ def main():
 				"donotreply@gmail.com",
 				"McGrath, D Kevin",
 				# socket.getfqdn() possibly causing ical issues due to email address mismatch
-				getpass.getuser() + "@engr.oregonstate.edu",
+				getpass.getuser() + "@engr.orst.edu",
 				"2015-01-30 15:00:00-08:00",
 				"2015-01-30 15:30:00-08:00",
 				"Monday, January 30th, 2015",

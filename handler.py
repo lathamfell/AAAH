@@ -34,7 +34,7 @@ def main():
   
   # send icalendar invite
   # socket.getfqdn() issue -- removed
-  user_string = getpass.getuser() + "@engr.oregonstate.edu"
+  user_string = getpass.getuser() + "@engr.orst.edu"
 
   # For some reason, if multiple emails are entered here, only the first
   #   email will receive the icalendar invite.  So just use one email here
@@ -162,7 +162,7 @@ def main():
              "Where: Office of " + advisorName
       subject = "Appointment Cancellation for " + studentName
       cal.add('method', 'CANCEL')
-      cal.add('status', 'cancelled')
+      cal.add('status', 'CANCELLED')
 
     # build the event
     event = icalendar.Event()
@@ -178,7 +178,10 @@ def main():
     event.add('dtstamp', tz.localize(datetime.datetime.now()))
     event['uid'] = uid
     event.add('priority', 5)
-    event.add('sequence', 1)
+    if signup:
+      event.add('sequence', 1)
+    else:
+      event.add('sequence', 2)
     event.add('created', tz.localize(datetime.datetime.now()))
 
     # add the event to the icalendar object

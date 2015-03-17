@@ -8,7 +8,7 @@ from time import sleep
 
 ## CHANGE THESE VALUES TO TEST
 studentAddress = "donotreply@gmail.com"
-advisorAddress = getpass.getuser() + "@engr.oregonstate.edu"
+advisorAddress = getpass.getuser() + "@engr.orst.edu"
 # Causing ical issues
 # advisorAddress = getpass.getuser() + "@" + socket.getfqdn() 
 advisorName = "!THIS IS A TEST!!!"
