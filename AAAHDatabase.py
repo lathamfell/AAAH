@@ -199,11 +199,6 @@ def removeAppointmentSQL(uid):
 		try:
 			cur.execute(sql)
 			db.commit()
-			if DEBUG:
-				# write to log for debugging purposes
-				with open("../AAAH/db_log", 'a') as logfile:
-					logfile.write('\n' + str(tz.localize(datetime.datetime.now())))
-					logfile.write(" : deleted " + uid + " from db") 
 		except:
 			# rollback in case there was an error
 			db.rollback()
