@@ -46,7 +46,7 @@ def sendSignup(iterations):
     # pick a random year
     year = random.randrange(2015, 2016 + 1)
     # pick a random month
-    month = random.randrange(1, 12 + 1)
+    month = random.randrange(5, 12 + 1)
     # pick a random day in that month
     if month == 1 or month == 3 or month == 5 or month == 7 or \
        month == 8 or month == 10 or month == 12:
