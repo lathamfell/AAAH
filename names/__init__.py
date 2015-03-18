@@ -20,7 +20,7 @@ FILES = {
 
 
 def get_name(filename):
-    selected = random.random() * 90
+    selected = random.random() * 44
     with open(filename) as name_file:
         for line in name_file:
             name, _, cummulative, _ = line.split()
