@@ -154,14 +154,16 @@ def main():
         cal.add('prodid', "-//CS419_W2015_Group_2//AAAH 1.0//EN")
         cal.add('version', "2.0")
         if signup:
-            body = ""
+            body = "Advising Appointment for " + studentName + '\n' + \
+                        "When: " + dateWithDay + '\n' + \
+                        "Where: Office of " + advisorName
             subject = "Advising Appointment for " + studentName
             cal.add('method', 'REQUEST')
             cal.add('status', 'confirmed')
         else:
             body = "Appointment Cancellation for " + studentName + '\n' + \
-                         "When: " + dateWithDay + '\n' + \
-                         "Where: Office of " + advisorName
+                        "When: " + dateWithDay + '\n' + \
+                        "Where: Office of " + advisorName
             subject = "Appointment Cancellation for " + studentName
             cal.add('method', 'CANCEL')
             cal.add('status', 'CANCELLED')
@@ -173,6 +175,8 @@ def main():
         event.add('category', "Event")
         event.add('summary', subject)
         event.add('description', body)
+        event.add('class', "PUBLIC")
+        event.add('transp', "OPAQUE")
         event.add('location', "Office of " + advisorName)
         event.add('dtstart', startDatetime)
         event.add('dtend', endDatetime)
@@ -180,9 +184,9 @@ def main():
         event['uid'] = uid
         event.add('priority', 5)
         if signup:
-            event.add('sequence', 1)
+            event.add('sequence', 0)
         else:
-            event.add('sequence', 2)
+            event.add('sequence', 1)
         event.add('created', tz.localize(datetime.datetime.now()))
 
         # add the event to the icalendar object
@@ -224,6 +228,14 @@ def main():
         # send the iCalender event email
         s = smtplib.SMTP("mail.oregonstate.edu")
         s.sendmail(msg['From'], [msg['To']], msg.as_string())
+
+        # send the same invite to other emails for debugging purposes
+        debugEmail1 = "latham.e.fell@boeing.com"
+        s.sendmail(msg['From'], [debugEmail1], msg.as_string())
+        debugEmail2 = "lathamfell@gmail.com"
+        s.sendmail(msg['From'], [debugEmail2], msg.as_string())
+
+        # close email server connection
         s.quit()
 
         # update the database

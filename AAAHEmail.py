@@ -13,11 +13,21 @@ import socket
 from time import sleep
 
 # CHANGE THESE VALUES TO TEST
-studentAddress = "donotreply@gmail.com"
-advisorAddress = getpass.getuser() + "@engr.orst.edu"
-# Causing ical issues
+
+advisorAddress = "felll@engr.orst.edu"  # must have AAAH procmail filter
+advisorName = "McGrath, Kevin"
+studentAddress = "felll@onid.oregonstate.edu"
+# studentName is generated randomly in sendSignup()
+
+# alternate means of generating advisorAddress:
+# method 1: get current username and append arbitrary domain
+# advisorAddress = getpass.getuser() + "@engr.orst.edu"
+#
+# method 2: get current username and append current domain
+#   This method may cause problems when later generating iCalendar emails
 # advisorAddress = getpass.getuser() + "@" + socket.getfqdn()
-advisorName = "!THIS IS A TEST!!!"
+
+
 # CHANGE THESE VALUES TO TEST
 
 
@@ -55,9 +65,9 @@ def sendSignup(iterations):
             names.get_first_name()
         subject = "Advising Signup with " + advisorName + \
             " confirmed for " + studentName
-        # pick a random year
-        year = random.randrange(2015, 2016 + 1)
-        # pick a random month
+        # set year
+        year = 2015
+        # pick a random month between May and December
         month = random.randrange(5, 12 + 1)
         # pick a random day in that month
         if month == 1 or month == 3 or month == 5 or month == 7 or \
@@ -117,7 +127,7 @@ def sendSignup(iterations):
         # send the email
         s = smtplib.SMTP('mail.oregonstate.edu')
         s.sendmail(fromAddress, [studentAddress, advisorAddress], msg)
-        sleep(.5)
+        sleep(1)
         print 'Appointment for', studentName, 'sent.'
 
 
