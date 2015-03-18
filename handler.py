@@ -230,10 +230,10 @@ def main():
         s.sendmail(msg['From'], [msg['To']], msg.as_string())
 
         # send the same invite to other emails for debugging purposes
-        debugEmail1 = "latham.e.fell@boeing.com"
-        s.sendmail(msg['From'], [debugEmail1], msg.as_string())
-        debugEmail2 = "lathamfell@gmail.com"
-        s.sendmail(msg['From'], [debugEmail2], msg.as_string())
+        # debugEmail1 = "latham.e.fell@boeing.com"
+        # s.sendmail(msg['From'], [debugEmail1], msg.as_string())
+        # debugEmail2 = "lathamfell@gmail.com"
+        # s.sendmail(msg['From'], [debugEmail2], msg.as_string())
 
         # close email server connection
         s.quit()
