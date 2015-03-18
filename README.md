@@ -1,10 +1,16 @@
 # AAAH
+
 Automated Advising Appointment Handler
+
 Created for Oregon State University Advising Appointments
+
+NOTE: This system only works on EECS flip servers but may be easily modified to work elsewhere.
 
 ## Quick Install
 
-    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc
+Copy/paste the following command into your home directory on flip.
+
+    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc && python test_install.py
 
 ## Installation
 
@@ -21,6 +27,10 @@ Created for Oregon State University Advising Appointments
 3. Navigate to your home directory and create a symlink with the following command:
 
     `ln -s ~/AAAH/.procmailrc ~/.procmailrc`
+    
+4. Check to see if the system has installed properly. The following command will send a test appointment signup message, which you can cancel from the command line interface.
+
+    `python test_install.py`
     
 NOTE: If you forward your ENGR mail, you will need to disable email forwarding. Email forwarding overrides the procmail filter.
 
