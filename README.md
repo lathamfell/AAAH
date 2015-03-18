@@ -8,6 +8,8 @@ NOTE: This system only works on EECS flip servers but may be easily modified to 
 
 ## Quick Install
 
+Copy/paste the following command into your home directory on flip.
+
     git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc && python test_install.py
 
 ## Installation
