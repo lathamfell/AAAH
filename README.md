@@ -1,11 +1,14 @@
 # AAAH
+
 Automated Advising Appointment Handler
+
 Created for Oregon State University Advising Appointments
-NOTE: This system only works on EECS flip
+
+NOTE: This system only works on EECS flip servers but may be easily modified to work elsewhere.
 
 ## Quick Install
 
-    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc
+    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc && python test_install.py
 
 ## Installation
 
