@@ -14,9 +14,9 @@ from time import sleep
 
 # CHANGE THESE VALUES TO TEST
 
-advisorAddress = "felll@engr.orst.edu"  # must have AAAH procmail filter
-advisorName = "McGrath, Kevin"
-studentAddress = "felll@onid.oregonstate.edu"
+advisorAddress = getpass.getuser() + "@engr.orst.edu"  # must have AAAH procmail filter
+advisorName = "McTester, Nester"
+studentAddress = getpass.getuser() + "@onid.oregonstate.edu"
 # studentName is generated randomly in sendSignup()
 
 # alternate means of generating advisorAddress:
