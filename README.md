@@ -13,11 +13,11 @@ Created for Oregon State University EECS Advising Appointments
 1. Choose a method of installation (quick or step by step) and follow the directions below. If you unzipped the program via the .tar.bz2 file, skip to Step 2.
 
 2. If you'd like to verify that the filter has been set-up correctly, enter the command under "User Validation". This will send a test appointment to your ENGR mail. The meeting should also be visible in the Command Line Interface (CLI). To test cancellation, locate the test meeting in the CLI and cancel by entering the number. A cancellation email should be sent to your ENGR mail.
-          [New Appointment ical Screenshot - view README.md in GitHub for link](/NewAppt_Screenshot.png)
-          [Appointment Cancellation ical Screenshot - view README.md in GitHub for link](/Cancel_Screenshot.png)
+    - [New Appointment ical Screenshot - view README.md in GitHub for link](/NewAppt_Screenshot.png)
+    - [Appointment Cancellation ical Screenshot - view README.md in GitHub for link](/Cancel_Screenshot.png)
  
 3. Manage appointments via the CLI. They can be added to or removed from your Outloook calendar using the iCal links sent to your email. Use the directions below or on-screen for navigating the CLI.
-          [CLI Interface Screenshot - view README.md in GitHub for link](/CLI_Sreenshot.png)
+    - [CLI Interface Screenshot - view README.md in GitHub for link](/CLI_Sreenshot.png)
 
 ## Quick Install
 
