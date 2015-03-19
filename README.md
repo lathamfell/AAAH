@@ -16,7 +16,7 @@ Created for Oregon State University EECS Advising Appointments
     - [New Appointment ical Screenshot - view README.md in GitHub for link](/NewAppt_Screenshot.png)
     - [Appointment Cancellation ical Screenshot - view README.md in GitHub for link](/Cancel_Screenshot.png)
  
-3. Manage appointments via the CLI. They can be added to or removed from your Outloook calendar using the iCal links sent to your email. Use the directions below or on-screen for navigating the CLI.
+3. Manage appointments via the CLI. They can be added to or removed from your Outlook calendar using the iCal links sent to your email. Use the directions below or on-screen for navigating the CLI.
     - [CLI Interface Screenshot - view README.md in GitHub for link](/CLI_Sreenshot.png)
 
 ## Quick Install
@@ -43,7 +43,7 @@ Copy/paste the following command into your home directory on flip.
     
 ## User Validation
 
-The following command will send a test appointment signup message, which you can cancel from the command line interface.
+The following command will send a test appointment sign-up message, which you can cancel from the command line interface.
 
     `python test_install.py`
     
@@ -56,7 +56,7 @@ The following command will send a test appointment signup message, which you can
 
 2. A list of scheduled appointments will be displayed. Up to 14 appointments will be visible at one time. Use the arrow keys to scroll through the full list.                                                                                             
 
-3. To cancel an appointment, type the appoinment ID, followed by the Enter key. This will send a cancellation email to the student and send an iCal to you to remove the appointment from your calendar.
+3. To cancel an appointment, type the appointment ID, followed by the Enter key. This will send a cancellation email to the student and send an iCal to you to remove the appointment from your calendar.
 
 4. To refresh the list of appointments, type 'r'. This will remove the cancelled appointments from your display.
 
