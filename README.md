@@ -51,7 +51,7 @@ The following command will send a test appointment signup message, which you can
 
     `python AAAH.py`
 
-2. A list of scheduled appointments will be displayed. Up to 14 appointments will be visible at one time. Use the arrow keys to scroll through the full list.                                                                                                                                                                                                                                  [CLI Interface Screenshot](/CLI_Sreenshot.png)
+2. A list of scheduled appointments will be displayed. Up to 14 appointments will be visible at one time. Use the arrow keys to scroll through the full list.                                                                                             
 
 3. To cancel an appointment, type the appoinment ID, followed by the Enter key. This will send a cancellation email to the student and send an iCal to you to remove the appointment from your calendar.
 
