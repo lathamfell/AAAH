@@ -30,7 +30,7 @@ Copy/paste the following command into your home directory on flip.
 
 Navigate to the AAAH directory and enter the following command. 
 
-    `python test_install.py`
+    python test_install.py
 
 This will send a test appointment to your ENGR mail. The meeting should also be visible in the Command Line Interface (CLI). To test cancellation, locate the test meeting in the CLI and cancel by entering the number. A cancellation email should be sent to your ENGR mail.
     - [New Appointment ical Screenshot](/NewAppt_Screenshot.png)
