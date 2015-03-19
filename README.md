@@ -23,7 +23,7 @@ Created for Oregon State University EECS Advising Appointments
 
 Copy/paste the following command into your home directory on flip.
 
-    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc && python test_install.py
+    git clone https://github.com/lathamfell/AAAH.git && ln -s ~/AAAH/.procmailrc ~/.procmailrc
 
 ## Step by Step Install
 
@@ -43,7 +43,7 @@ Copy/paste the following command into your home directory on flip.
     
 ## User Validation
 
-The following command will send a test appointment sign-up message, which you can cancel from the command line interface.
+Navigate to the AAAH directory. The following command will send a test appointment sign-up message, which you can cancel from the command line interface.
 
     `python test_install.py`
     
