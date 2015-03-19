@@ -7,6 +7,7 @@ Created for Oregon State University EECS Advising Appointments
 ## Notes
 - This system only works on EECS flip servers but may be easily modified to work elsewhere.
 - If you forward your ENGR mail, you will need to disable email forwarding. Email forwarding overrides the procmail filter.
+    - In order to check forwarding state, navigate to https://secure.engr.oregonstate.edu:8000/teach.php and click "Email Forwarding". Find this under "Email Tools" in the right menu.   
 
 ## Getting Started
 1. Choose a method of installation (quick or step by step) and follow the directions below.
@@ -52,7 +53,7 @@ The following command will send a test appointment signup message, which you can
 
 2. A list of scheduled appointments will be displayed. Up to 14 appointments will be visible at one time. Use the arrow keys to scroll through the full list.
 
-[TODO: picture]
+(docs/CLI_Screenshot.png)
 
 3. To cancel an appointment, type the appoinment ID, followed by the Enter key. This will send a cancellation email to the student and send an iCal to you to remove the appointment from your calendar.
 
