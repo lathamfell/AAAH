@@ -33,13 +33,13 @@ Navigate to the AAAH directory and enter the following command.
     python test_install.py
 
 This will send a test appointment to your ENGR mail. The meeting should also be visible in the Command Line Interface (CLI). To test cancellation, locate the test meeting in the CLI and cancel by entering the number. A cancellation email should be sent to your ENGR mail.
-    - [New Appointment ical Screenshot](/NewAppt_Screenshot.png)
-    - [Appointment Cancellation ical Screenshot](/Cancel_Screenshot.png)
+    - [New Appointment ical Screenshot](/imgs/NewAppt_Screenshot.png)
+    - [Appointment Cancellation ical Screenshot](/imgs/Cancel_Screenshot.png)
 
 ## Usage - Command Line Interface:
 
 Appointments can be added to or removed from your Outlook calendar using the iCal links sent to your email. Use the directions below or on-screen for navigating the CLI.
-    - [CLI Interface Screenshot](/CLI_Sreenshot.png)
+    - [CLI Interface Screenshot](/imgs/CLI_Sreenshot.png)
 
 1. In the `~/AAAH` directory, enter the command:
 
