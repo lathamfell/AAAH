@@ -4,21 +4,6 @@ Automated Advising Appointment Handler
 
 Created for Oregon State University EECS Advising Appointments
 
-## Notes
-- This system only works on EECS flip servers but may be easily modified to work elsewhere.
-- If you forward your ENGR mail, you will need to disable email forwarding. Email forwarding overrides the procmail filter.
-    - In order to check forwarding state, navigate to https://secure.engr.oregonstate.edu:8000/teach.php and click "Email Forwarding". Find this under "Email Tools" in the right menu.   
-
-## Getting Started
-1. Choose a method of installation (quick or step by step) and follow the directions below. If you unzipped the program via the .tar.bz2 file, skip to Step 2.
-
-2. If you'd like to verify that the filter has been set-up correctly, enter the command under "User Validation". This will send a test appointment to your ENGR mail. The meeting should also be visible in the Command Line Interface (CLI). To test cancellation, locate the test meeting in the CLI and cancel by entering the number. A cancellation email should be sent to your ENGR mail.
-    - [New Appointment ical Screenshot - view README.md in GitHub for link](/NewAppt_Screenshot.png)
-    - [Appointment Cancellation ical Screenshot - view README.md in GitHub for link](/Cancel_Screenshot.png)
- 
-3. Manage appointments via the CLI. They can be added to or removed from your Outlook calendar using the iCal links sent to your email. Use the directions below or on-screen for navigating the CLI.
-    - [CLI Interface Screenshot - view README.md in GitHub for link](/CLI_Sreenshot.png)
-
 ## Quick Install
 
 Copy/paste the following command into your home directory on flip.
@@ -27,7 +12,7 @@ Copy/paste the following command into your home directory on flip.
 
 ## Step by Step Install
 
-1. Clone or download the code into your home directory on flip:
+1. Clone or download and unzip into your home directory on flip:
 
     `git clone https://github.com/lathamfell/AAAH.git`
 
@@ -41,23 +26,34 @@ Copy/paste the following command into your home directory on flip.
 
     `ln -s ~/AAAH/.procmailrc ~/.procmailrc`
     
-## User Validation
+## Verify installation
 
-Navigate to the AAAH directory. The following command will send a test appointment sign-up message, which you can cancel from the command line interface.
+Navigate to the AAAH directory and enter the following command. 
 
     `python test_install.py`
-    
+
+This will send a test appointment to your ENGR mail. The meeting should also be visible in the Command Line Interface (CLI). To test cancellation, locate the test meeting in the CLI and cancel by entering the number. A cancellation email should be sent to your ENGR mail.
+    - [New Appointment ical Screenshot - view README.md in GitHub for link](/NewAppt_Screenshot.png)
+    - [Appointment Cancellation ical Screenshot - view README.md in GitHub for link](/Cancel_Screenshot.png)
 
 ## Usage - Command Line Interface:
+
+Appointments can be added to or removed from your Outlook calendar using the iCal links sent to your email. Use the directions below or on-screen for navigating the CLI.
+    - [CLI Interface Screenshot - view README.md in GitHub for link](/CLI_Sreenshot.png)
 
 1. In the `~/AAAH` directory, enter the command:
 
     `python AAAH.py`
 
-2. A list of scheduled appointments will be displayed. Up to 14 appointments will be visible at one time with the default terminal size. Use the arrow keys to scroll through the full list or resize the window to see more.                                                                                             
+2. A list of scheduled appointments will be displayed. Up to 14 appointments will be visible at one time with the default terminal size. Use the arrow keys to scroll through the full list or resize the window to see more.                             
 
 3. To cancel an appointment, type the appointment ID, followed by the Enter key. This will send a cancellation email to the student and send an iCal to you to remove the appointment from your calendar.
 
 4. To refresh the list of appointments, type 'r'. This will remove the cancelled appointments from your display.
 
 5. To quit the AAAH tool, type 'q'. You will be returned to the `~/AAAH` directory.
+
+## Notes
+- This system only works on EECS flip servers but may be easily modified to work elsewhere.
+- If you forward your ENGR mail, you will need to disable email forwarding. Email forwarding overrides the procmail filter.
+    - In order to check forwarding state, navigate to https://secure.engr.oregonstate.edu:8000/teach.php and click "Email Forwarding". Find this under "Email Tools" in the right menu.
